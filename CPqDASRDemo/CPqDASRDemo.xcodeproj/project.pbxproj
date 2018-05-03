@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		223D9EFB209B6E1500DC4781 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 223D9EFA209B6E1500DC4781 /* AudioToolbox.framework */; };
 		224F174E20766046008B1F61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F174D20766046008B1F61 /* AppDelegate.swift */; };
 		224F175020766046008B1F61 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F174F20766046008B1F61 /* ViewController.swift */; };
 		224F175320766046008B1F61 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 224F175120766046008B1F61 /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		223D9EFA209B6E1500DC4781 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		224F174A20766046008B1F61 /* CPqDASRDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CPqDASRDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		224F174D20766046008B1F61 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		224F174F20766046008B1F61 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				223D9EFB209B6E1500DC4781 /* AudioToolbox.framework in Frameworks */,
 				224F17A2207683AC008B1F61 /* CPqDASR.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -76,12 +79,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		223D9EF9209B6E1500DC4781 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				223D9EFA209B6E1500DC4781 /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		224F174120766046008B1F61 = {
 			isa = PBXGroup;
 			children = (
 				224F174C20766046008B1F61 /* CPqDASRDemo */,
 				224F176120766046008B1F61 /* CPqDASRDemoTests */,
 				224F174B20766046008B1F61 /* Products */,
+				223D9EF9209B6E1500DC4781 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};

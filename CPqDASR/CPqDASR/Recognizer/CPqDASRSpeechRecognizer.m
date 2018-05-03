@@ -137,13 +137,9 @@
 }
 
 - (void)startRecording {
-    dispatch_async( self.recognizerQueue , ^{
-        @synchronized (self) {
-            if ([self.audioSource respondsToSelector:@selector(start)]){
-                [self.audioSource start];
-            }
-        }
-    });
+    if ([self.audioSource respondsToSelector:@selector(start)]){
+        [self.audioSource start];
+    }    
 }
 
 - (void)createSession {

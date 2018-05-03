@@ -16,6 +16,8 @@
 
 import UIKit
 import CPqDASR
+import AudioToolbox
+import AVFoundation
 
 class ViewController: UIViewController {
     
@@ -25,6 +27,8 @@ class ViewController: UIViewController {
     let username = "estevan";
     let password = "Thect195";
     let languageModelList = CPqDASRLanguageModelList();
+    let beginRecordingSoundId = 1115
+    let endRecordingSoundId = 1116
     
         
     @IBOutlet weak var recognizeButton: RecognizeButton!
@@ -49,7 +53,7 @@ class ViewController: UIViewController {
         
         recognizer = builder?.build()
         audioSource = CPqDASRMicAudioSource(delegate: self, andSampleRate: .rate8K);
-        audioSource?.setDetectEndOfSpeech(true)
+        audioSource?.setDetectEndOfSpeech(false)
     }
     
     
@@ -75,6 +79,11 @@ class ViewController: UIViewController {
         }
     }
     
+    func playSound(soundId: Int) {
+        if let sound = SystemSoundID.init(exactly: NSNumber(integerLiteral: soundId)) {
+            AudioServicesPlaySystemSound(sound);
+        }
+    }
 }
 
 extension ViewController : CPqDASRMicAudioSourceDelegate {
@@ -90,6 +99,7 @@ extension ViewController : CPqDASRRecognitionDelegate {
     func cpqdASRDidStartListening() {
         self.stateLabel.text = "Listening"
         self.recognizeButton.recordingState = .Recording
+        self.playSound(soundId: beginRecordingSoundId)
     }
     
     func cpqdASRDidStartSpeech(_ time: TimeInterval) {
@@ -98,6 +108,7 @@ extension ViewController : CPqDASRRecognitionDelegate {
     
     func cpqdASRDidStopSpeech(_ time: TimeInterval) {
         self.stateLabel.text = "Speech stopped"
+    
     }
     
     func cpqdASRDidReturnPartialResult(_ result: CPqDASRRecognitionResult!) {
@@ -105,6 +116,7 @@ extension ViewController : CPqDASRRecognitionDelegate {
     }
     
     func cpqdASRDidReturnFinalResult(_ result: CPqDASRRecognitionResult!) {
+        self.playSound(soundId: endRecordingSoundId)
         self.recognizeButton.recordingState = .Idle
         switch result.status {
             case .recognized:
