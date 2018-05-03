@@ -1,10 +1,19 @@
-//
-//  CPqDASRMicAudioSource.m
-//  CPqDASR
-//
-//  Created by rmorbach on 05/04/18.
-//  Copyright © 2018 CPqD. All rights reserved.
-//
+/*******************************************************************************
+ * Copyright 2017 CPqD. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
+
 
 #import "CPqDASRMicAudioSource.h"
 #include "zc-e.h"
@@ -62,7 +71,6 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
     // Variável para restringir a execução de código apenas uma vez após reconhecimento de fim de fala.
     BOOL wasEndOfSpeechAlreadySignalled;
     
-    //rmorbach
     void *audioBuffer;
     
     dispatch_queue_t _audioQueue;
@@ -122,7 +130,7 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
     _aqData->mDataFormat.mFormatFlags = kLinearPCMFormatFlagIsSignedInteger | kLinearPCMFormatFlagIsPacked;
     
     
-    //rmorbach - Callback for normal recording
+    //Callback for normal recording
     SEL callbackSelector;
     callbackSelector = @selector(onRecordAudio:);
     
@@ -130,7 +138,7 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
     _aqData->callbackTarget = self;
     _aqData->callbackMethodSelector = callbackSelector;
     
-    //rmorbach - Callback for silence detection
+    //Callback for silence detection
     SEL silenceCallbackSelector;
     silenceCallbackSelector = @selector(onSilenceDetected);
     
@@ -143,7 +151,6 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
     _aqData->zero_cross_vector = zero_cross_vector;
     _aqData->zero_cross_vector_position = &zero_cross_vector_position;
     
-    //rmorbach
     _aqData->audioBuffer = audioBuffer;
     
     OSStatus retval;
@@ -307,7 +314,9 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
 #pragma mark - CPqDASRAudioSource methods
 
 - (void)start {
-    [self startRecording];
+    dispatch_async( _audioQueue , ^{
+        [self startRecording];
+    });
 }
 
 - (NSData *)read {

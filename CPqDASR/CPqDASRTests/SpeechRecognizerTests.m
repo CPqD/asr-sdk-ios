@@ -1,10 +1,19 @@
-//
-//  SpeechRecognizerTests.m
-//  CPqDASRTests
-//
-//  Created by rodrigomorbach on 13/04/18.
-//  Copyright © 2018 CPqD. All rights reserved.
-//
+/*******************************************************************************
+ * Copyright 2017 CPqD. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
+
 
 #import <XCTest/XCTest.h>
 #import <CPqDASR/CPqDASR.h>
@@ -29,6 +38,10 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 @property (nonatomic) NSString * wsURL;
 
+@property (nonatomic) NSString * username;
+
+@property (nonatomic) NSString * password;
+
 @end
 
 @implementation SpeechRecognizerTests
@@ -36,13 +49,11 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 - (void)setUp {
     [super setUp];
     self.currentBundle = [NSBundle bundleForClass:[self class]];
-    
-    self.wsURL = @"ws://vmh123.cpqd.com.br:8025/asr-server/asr";
-    
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:nil delegate:self] autoClose: NO] connectOnRecognize: YES] maxSessionIdleSeconds: 5];
-    
+    self.wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    self.password = @"Thect195";
+    self.username = @"estevan";
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:@[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: YES] maxSessionIdleSeconds: 5];
     self.recognizer = [builder build];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
 - (void)testBasicGrammar {
@@ -220,8 +231,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testSessionTimeout {
-    
-    
+        
 }
 
 - (void)testRecognizeAfterSessionTimeout {
@@ -276,7 +286,6 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     
     [self waitForExpectations:@[testExpectation] timeout:20.0];
 }
-
 
 #pragma mark -
 #pragma mark - CPqDASRRecognitionDelegate methods

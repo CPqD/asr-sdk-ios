@@ -28,7 +28,6 @@
 		22AE223F20813DAB008D2D27 /* RecognizerBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AE223E20813DAB008D2D27 /* RecognizerBuilderTests.m */; };
 		22AE224120813E25008D2D27 /* SpeechRecognizerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AE224020813E25008D2D27 /* SpeechRecognizerTests.m */; };
 		22C738162075111600762D6E /* CPqDASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C7380C2075111600762D6E /* CPqDASR.framework */; };
-		22C7381B2075111600762D6E /* CPqDASRTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C7381A2075111600762D6E /* CPqDASRTests.m */; };
 		22C7381D2075111600762D6E /* CPqDASR.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7380F2075111600762D6E /* CPqDASR.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		22C73835207517EE00762D6E /* zc-e.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C73833207517EE00762D6E /* zc-e.h */; };
 		22C73836207517EE00762D6E /* zc-e.c in Sources */ = {isa = PBXBuildFile; fileRef = 22C73834207517EE00762D6E /* zc-e.c */; };
@@ -89,7 +88,6 @@
 		22C7380F2075111600762D6E /* CPqDASR.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPqDASR.h; sourceTree = "<group>"; };
 		22C738102075111600762D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22C738152075111600762D6E /* CPqDASRTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CPqDASRTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		22C7381A2075111600762D6E /* CPqDASRTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPqDASRTests.m; sourceTree = "<group>"; };
 		22C7381C2075111600762D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		22C73833207517EE00762D6E /* zc-e.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "zc-e.h"; sourceTree = "<group>"; };
 		22C73834207517EE00762D6E /* zc-e.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "zc-e.c"; sourceTree = "<group>"; };
@@ -194,7 +192,6 @@
 			isa = PBXGroup;
 			children = (
 				2270F16E2086635F0048498B /* Resources */,
-				22C7381A2075111600762D6E /* CPqDASRTests.m */,
 				22C7381C2075111600762D6E /* Info.plist */,
 				22AE223E20813DAB008D2D27 /* RecognizerBuilderTests.m */,
 				22AE224020813E25008D2D27 /* SpeechRecognizerTests.m */,
@@ -517,7 +514,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				22AE224120813E25008D2D27 /* SpeechRecognizerTests.m in Sources */,
-				22C7381B2075111600762D6E /* CPqDASRTests.m in Sources */,
 				22AE223F20813DAB008D2D27 /* RecognizerBuilderTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

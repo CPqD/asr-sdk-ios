@@ -1,11 +1,12 @@
 CPqDASR SDK para iOS
 ===================
-//TODO
+O CPqDASR é uma framework para a criação de aplicações de voz que utilizam o servidor CPqD ASR para reconhecimento de fala.
 
 Para maiores informações, consulte [a documentação do projeto](https://speechweb.cpqd.com.br/asr/docs).
 
 ### Aplicação de exemplo
-//TODO
+
+A aplicação de demonstração está no diretório [CPqDASRDemo](https://github.com/CPqD/asr-sdk-ios/tree/master/CPqDASRDemo)
 
 Licença
 -------

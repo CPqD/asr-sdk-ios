@@ -15,9 +15,7 @@
 		224F176320766046008B1F61 /* CPqDASRDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F176220766046008B1F61 /* CPqDASRDemoTests.swift */; };
 		224F17A2207683AC008B1F61 /* CPqDASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224F17A0207683A6008B1F61 /* CPqDASR.framework */; };
 		224F17A3207683AC008B1F61 /* CPqDASR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224F17A0207683A6008B1F61 /* CPqDASR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2270F17D208698520048498B /* pizza-veg-8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2270F17C208698520048498B /* pizza-veg-8k.wav */; };
-		22B4314520879ED3002178CF /* cpf_8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 22B4314420879ED3002178CF /* cpf_8k.wav */; };
-		22B431472087BA7F002178CF /* hetero_segments_8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 22B431462087BA7F002178CF /* hetero_segments_8k.wav */; };
+		22C22844209B33B0004EE4B9 /* RecognizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C22843209B33B0004EE4B9 /* RecognizeButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,9 +54,7 @@
 		224F176220766046008B1F61 /* CPqDASRDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPqDASRDemoTests.swift; sourceTree = "<group>"; };
 		224F176420766046008B1F61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		224F17A0207683A6008B1F61 /* CPqDASR.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CPqDASR.framework; sourceTree = "<group>"; };
-		2270F17C208698520048498B /* pizza-veg-8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "pizza-veg-8k.wav"; sourceTree = "<group>"; };
-		22B4314420879ED3002178CF /* cpf_8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cpf_8k.wav; sourceTree = "<group>"; };
-		22B431462087BA7F002178CF /* hetero_segments_8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hetero_segments_8k.wav; sourceTree = "<group>"; };
+		22C22843209B33B0004EE4B9 /* RecognizeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +97,6 @@
 		224F174C20766046008B1F61 /* CPqDASRDemo */ = {
 			isa = PBXGroup;
 			children = (
-				2270F17B208698370048498B /* Resources */,
 				224F17A0207683A6008B1F61 /* CPqDASR.framework */,
 				224F174D20766046008B1F61 /* AppDelegate.swift */,
 				224F174F20766046008B1F61 /* ViewController.swift */,
@@ -109,6 +104,7 @@
 				224F175420766046008B1F61 /* Assets.xcassets */,
 				224F175620766046008B1F61 /* LaunchScreen.storyboard */,
 				224F175920766046008B1F61 /* Info.plist */,
+				22C22843209B33B0004EE4B9 /* RecognizeButton.swift */,
 			);
 			path = CPqDASRDemo;
 			sourceTree = "<group>";
@@ -120,16 +116,6 @@
 				224F176420766046008B1F61 /* Info.plist */,
 			);
 			path = CPqDASRDemoTests;
-			sourceTree = "<group>";
-		};
-		2270F17B208698370048498B /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				22B431462087BA7F002178CF /* hetero_segments_8k.wav */,
-				22B4314420879ED3002178CF /* cpf_8k.wav */,
-				2270F17C208698520048498B /* pizza-veg-8k.wav */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,12 +200,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22B431472087BA7F002178CF /* hetero_segments_8k.wav in Resources */,
 				224F175820766046008B1F61 /* LaunchScreen.storyboard in Resources */,
-				2270F17D208698520048498B /* pizza-veg-8k.wav in Resources */,
 				224F175520766046008B1F61 /* Assets.xcassets in Resources */,
 				224F175320766046008B1F61 /* Main.storyboard in Resources */,
-				22B4314520879ED3002178CF /* cpf_8k.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +222,7 @@
 			files = (
 				224F175020766046008B1F61 /* ViewController.swift in Sources */,
 				224F174E20766046008B1F61 /* AppDelegate.swift in Sources */,
+				22C22844209B33B0004EE4B9 /* RecognizeButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

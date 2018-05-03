@@ -13,21 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
+import UIKit
 
+enum RecordingState {
+    case Idle
+    case Recording
+}
 
-#import <Foundation/Foundation.h>
+class RecognizeButton: UIButton {
 
-typedef NS_ENUM (NSInteger, CPqDASRLanguage){
-    CPqDASRLanguagePortuguese = 0,
-    CPqDASRLanguageSpanishLatam
-};
-
-@interface CPqDASRLanguageCode : NSObject
-
-- (id)init NS_UNAVAILABLE;
-
-- (instancetype)initWithLanguage:(CPqDASRLanguage)language;
-
-- (NSString *)value;
-
-@end
+    public var recordingState : RecordingState {
+        didSet {
+            if recordingState == .Recording {
+                self.isEnabled = false
+                self.backgroundColor = UIColor.red
+            } else {
+                self.isEnabled = true
+                self.backgroundColor = UIColor(red: 0, green: 150/255, blue: 136/255, alpha: 1.0);
+            }
+        }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        recordingState = .Idle
+        super.init(coder: aDecoder)
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.layer.cornerRadius = self.frame.width / 2;
+    }
+    
+}

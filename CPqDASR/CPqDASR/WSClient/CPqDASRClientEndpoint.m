@@ -1,11 +1,18 @@
-
-//
-//  CPqDASRClientEndpoint.m
-//  CPqDASR
-//
-//  Created by rodrigomorbach on 24/02/16.
-//  Copyright © 2016 CPqD. All rights reserved.
-//
+/*******************************************************************************
+ * Copyright 2017 CPqD. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
 
 #import "CPqDASRClientEndpoint.h"
 #import <SocketRocket.h>
@@ -14,10 +21,6 @@
 #import "CPqDASRReturnCode.h"
 #import <CPqDASR/CPqDASRRecognitionError.h>
 
-
-NSString *const kCPqDWSManagerCPqDSTTBundleName = @"CPqDASR";
-
-NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
 
 @interface CPqDASRClientEndpoint() <SRWebSocketDelegate>
 
@@ -57,7 +60,7 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
 - (instancetype)init {
     if( self = [super init] ){
         //Default value
-        self.sessionTimeout = 5.0f;
+        self.sessionTimeout = 60.0f;
         self.responseQueue = [[NSMutableArray alloc] init];
     }
     return self;
@@ -143,50 +146,10 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
     [CPqDASRLog logMessage: [NSString stringWithFormat:@"%@ dealloc called", NSStringFromClass([self class])]];
 }
 
-/**
- *@deprecated 1.0.0
+/*!
+ @brief teste
+ @todo Not used
  */
-- (void)createSessionForURL:(NSURL *)wsURL withUsername:(NSString *)username andPassword:(NSString *)password {
-    [CPqDASRLog logMessage:@"createSessionForURL with username called"];
-    if (self.webSocket) {
-        self.webSocket.delegate = nil;
-        [self.webSocket close];
-    }
-    //SSL testing
-    NSString * urlString = [wsURL absoluteString];
-    NSString * protocol = [[urlString componentsSeparatedByString:@"//"]firstObject];
-    NSString * host = [[urlString componentsSeparatedByString:@"//"]lastObject];
-    NSURL * newURL = wsURL;
-    if (username && password) {
-        NSString * newURLString = [protocol stringByAppendingString:[NSString stringWithFormat:@"//%@:%@@%@", username, password, host]];
-        newURL = [[NSURL alloc]initWithString:newURLString];
-    }
-    
-    NSMutableURLRequest * mutableRequest = [[NSMutableURLRequest alloc]initWithURL:newURL];
-    
-    //CPqDSTTBundle
-    NSString * cpqdSTTBundlePath = [[NSBundle mainBundle]pathForResource:kCPqDWSManagerCPqDSTTBundleName ofType:@"bundle"];
-    NSBundle * cpqdSTTBundle = [NSBundle bundleWithPath:cpqdSTTBundlePath];
-    NSString * certPath = [cpqdSTTBundle pathForResource:kCPqDWSManagerCPqDSTTBundleCertName ofType:@"der"];
-    
-    //Main bundle
-    //NSString * certPath =[[NSBundle mainBundle]pathForResource:@"vmh98" ofType:@"der"];
-    NSData * certData = [[NSData alloc]initWithContentsOfFile:certPath];
-    CFDataRef certDataRef = (__bridge CFDataRef)certData;
-    SecCertificateRef certRef = SecCertificateCreateWithData(NULL, certDataRef);
-    id certificate = (__bridge id)certRef;
-    [mutableRequest setSR_SSLPinnedCertificates:@[certificate]];
-    
-    self.webSocket = [[SRWebSocket alloc]initWithURLRequest:mutableRequest];
-    self.webSocket.delegate = self;
-    if (self.delegateQueue) {
-        [self.webSocket setDelegateDispatchQueue:self.delegateQueue];
-    }
-    [self.webSocket open];
-    CFRelease(certRef);
-}
-
-
 - (void)stopRecording {
     switch (self.status) {
         case ASRSessionStatusListening:
@@ -209,7 +172,9 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
 
 - (void)sendMessage:(ASRMessage *)message {
     id messageToSend = [message createMessage];
+    
     if([message isKindOfClass:[ASRSendAudio class]]) {
+        [CPqDASRLog logMessage: [NSString stringWithFormat:@"\n Sending Audio length %@ \n", message.contentlength]];
         NSMutableData * dt = [NSMutableData data];
         [dt appendData:[(NSString *)messageToSend dataUsingEncoding:NSUTF8StringEncoding]];
         [dt appendData:message.payload];
@@ -280,8 +245,7 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
     //Unauthorized
     if(error.code == 401 || error.code == 2132) {
         recognitionError.code = CPqDASRRecognitionErrorCodeUnauthorized;
-    }
-    
+    }    
     else if (error.code != 54 && !self.alreadyReturnResult) {
         recognitionError.code = CPqDASRRecognitionErrorCodeConnectionFailure;
     }
@@ -381,7 +345,7 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
         //General failure from WS protocol
         if (([response.resultStatus isEqualToString:kASRProtocolResponseResultFailure]) && (self.status != ASRSessionStatusRecognizing)) {
             [CPqDASRLog logMessage:[NSString stringWithFormat:@"%ld \n\nGeneral failure from WS protocol", (long)response.errorCode]];
-            [self stopRecording];
+            
             if (response.errorCode && !self.alreadyReturnResult) {
                 CPqDASRRecognitionError * recognitionError = [[CPqDASRRecognitionError alloc] init];
                 recognitionError.code = response.errorCode;
@@ -432,7 +396,7 @@ NSString *const kCPqDWSManagerCPqDSTTBundleCertName = @"globalCertificate";
             [self.delegate cpqdASRDidStopSpeech:time];
         }
         
-        //START_RECOGNITION Response
+        //START_RECOGNITION
         else if([response.method isEqualToString:kASRProtocolStartRecognition] && [response.result isEqualToString:kASRProtocolResponseResultSuccess] && response.sessionStatus == ASRSessionStatusListening) {
             [CPqDASRLog logMessage:@"\n\nSTART_RECOGNITION CALLED"];
             [self.delegate cpqdASRDidStartListening];

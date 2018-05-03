@@ -1,37 +1,37 @@
+/*******************************************************************************
+ * Copyright 2017 CPqD. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
+
 #include "zc-e.h"
 
-// Tamanho do buffer principal.
-// Com amostras em 8000 Hz, 16 bits por amostra e um canal (mono), o buffer comporta 30 segundos de audio.
-
-//const unsigned int kMainBufferSize = 480000;
-
-//rmorbach - não utilizado daqui
-// Com amostras em 16000 Hz, 16 bits por amostra e um canal (mono), o buffer comporta 10 segundos de audio.
+// With 16000 Hz samples, 16 buts per sample and a mono channel the buffer holds 10 seconds of audio
 const unsigned int kMainBufferSize = 320000;
 
-// Tamanho do queue buffer em bytes (8000 amostras/segundo) * (2 bytes/amostra) * (0,2 segundo).
-
-//const UInt32 kBufferSize = 3200;
-
-// Tamanho do queue buffer em bytes (16000 amostras/segundo) * (2 bytes/amostra) * (250 ms).
-
+// Length of queue buffer in bytes (16000 samples/second) * (2 bytes / sample) * 250 ms
 const UInt32 kBufferSize = 8000;
 
-//rmorbach - não utilizado até aqui
-
-// Numero de buffers no Audio Queue.
-
+// Number of buffers of Audio Queue
 const unsigned int kNumberBuffers = 3;
 
-// Tamanho da janela em numero de amostras.
-
+// Size of window in number of samples
 const unsigned int window_size = 100;
 
-// numero de amostras / janela = (tamanho das amostras em bytes / numero de bytes por amostra) / tamanho da janela em amostras
-
+// number of samples / window = (size of samples in bytes / number of bytes per sample) / size of samples window
 const unsigned int zero_cross_vector_size = (kMainBufferSize / 2) / window_size;
 
-// Limiar de energia.
+// energy threshold .
 
 const int level_threshold = 2000;
 
@@ -96,12 +96,6 @@ void reset_count_zc_e_custom(ZC *zc, int c_trigger, int c_length, int c_offset)
     }
 }
 
-
-
-
-
-
-
 /**
  * End procedure: free all buffers.
  *
@@ -112,9 +106,6 @@ void free_count_zc_e_custom(ZC *zc)
     free(zc->is_zc);
     free(zc->data);
 }
-
-
-
 
 /**
  * Adding buf[0..step-1] to the cycle buffer and update the count of
@@ -214,23 +205,9 @@ void calculateZcVector(
     int i;
     for (i = 0; i < zc_vector_first_invalid; ++i) {
         zero_cross_vector[i] = count_zc_e_custom(&zc, &(currentBuffer[i * window_size]), window_size);
-        // NSLog(@"[%4d] %d", i, zero_cross_vector[i]);
     }
     
     *zero_cross_vector_position = zc_vector_first_invalid;
-    
-#if 0
-    
-    while (i + wstep <= num_samples) {
-        zc_i = count_zc_e(&zc, &(currentBuffer[i]), wstep);
-        //fprintf(stderr, "current buffer = %d\n", currentBuffer[i]);
-        // fprintf(stderr, "%d\n", zc_i);
-        // NSLog(@"%d", zc_i);
-        i += wstep;
-    }
-    
-#endif
-    
     free_count_zc_e_custom(&zc);
 }
 
@@ -263,7 +240,6 @@ int hasSpeechStopped(int *zero_cross_vector, unsigned int zero_cross_vector_posi
                 if (zero_cross_vector[i] >= zc_threshold) {
                     
                     int is_speech_start;
-                    
                     // 100 ms in 8k = 800 samples = 8 windows
                     int j;
                     
@@ -281,15 +257,10 @@ int hasSpeechStopped(int *zero_cross_vector, unsigned int zero_cross_vector_posi
                         if (is_speech_start) {
                             local_speech_start_window = i;
                             state = 2;
-                            
-                            // O valor abaixo é 7 e não 8 porque o i será incrementado na próxima iteração do for.
                             i += 7;
                         }
                     }
                 }
-                
-                
-                //
                 break;
                 
             case 2:
@@ -300,9 +271,7 @@ int hasSpeechStopped(int *zero_cross_vector, unsigned int zero_cross_vector_posi
                     int j;
                     
                     if (i + windows <= zero_cross_vector_position) {
-                        
                         is_speech_stop = 1;
-                        
                         for (j = i + 1; j < i + windows; ++j) {
                             if (zero_cross_vector[j] >= zc_threshold) {
                                 is_speech_stop = 0;
@@ -342,28 +311,22 @@ void MyAudioQueueInputCallback(
                                const AudioStreamPacketDescription  *inPacketDesc
                                ) {
     
-    // NSLog(@"lap!  data buffer is %ld bytes", inBuffer->mAudioDataByteSize);
-    
-    // Ponteiro para conveniencia.
-    
+
+    // Pointer for convenience
     struct AQRecorderState *pAqData;
     
     pAqData = (struct AQRecorderState *) aqData;
     
-    // Buffer principal, onde sao guardadas todas as amostras.
-    
+    // main buffer
     void *_mainBuffer;
     
-    // Numero de bytes validos no buffer principal.  Variavel funciona como offset.
-    
+    // offset of main buffer
     unsigned int *_mainBufferOffset;
     
-    // Vetor de valores zero cross, necessario para se detectar fim de fala.
-    
+    // zero cross vector used to detect end of speech
     int *_zero_cross_vector;
     
-    // Posicao para o primeiro elemento nao valido do vetor de zero cross.
-    
+    // Position of first non-valid elemtn in zero cross vector
     unsigned int *_zero_cross_vector_position;
     
     _mainBuffer = pAqData->mainBuffer;
@@ -371,12 +334,7 @@ void MyAudioQueueInputCallback(
     _zero_cross_vector = pAqData->zero_cross_vector;
     _zero_cross_vector_position = pAqData->zero_cross_vector_position;
     
-    // Escreve no buffer principal as amostras do buffer do Audio Queue.
-    // Se as novas amostras nao couberem no buffer principal por ele estar quase cheio,
-    // eliminam-se as amostras mais antigas de forma que o buffer principal comporte
-    // todas as novas amostras.
-    
-    //if (*_mainBufferOffset + inBuffer->mAudioDataByteSize > kMainBufferSize) {
+    // Write in the main buffer. If there is no space left in main buffer, erase old samples from main buffer to fit new ones.
     if (*_mainBufferOffset + inBuffer->mAudioDataByteSize > pAqData->kMainBufferSize) {
         
         unsigned int difference;
@@ -389,7 +347,6 @@ void MyAudioQueueInputCallback(
         *_mainBufferOffset -= difference;
   
         printf("overflow! data exceeded in %d bytes", difference);
-//         NSLog(@"overflow!  data exceeded in %d bytes", difference);
         
     }
     
@@ -397,61 +354,29 @@ void MyAudioQueueInputCallback(
     
     *_mainBufferOffset += inBuffer->mAudioDataByteSize;
     
-    //rmorbach
     pAqData->audioBuffer = inBuffer->mAudioData;
     pAqData->lastLengthAudioBuffer = (int)inBuffer->mAudioDataByteSize;
     
-    
     pAqData->callbackMethodImplementation(pAqData->callbackTarget, pAqData->callbackMethodSelector, (int)inBuffer->mAudioDataByteSize);
     
-    // Poe o buffer novamente na fila do Audio Queue.
-    
+    // Enqueue buffer is running.
     if (pAqData->mIsRunning) {
         
         AudioQueueEnqueueBuffer(pAqData->mQueue, inBuffer, 0, NULL);
         
     }
     
-    
-    // (8000 amostras / segundo) * (2 bytes / amostra) * (2 segundos)
-    
-    //    if (*_mainBufferOffset >= 32000) {
-    
-    // (16000 amostras / segundo) * (2 bytes / amostra) * (2 segundos)
     //Verify each two seconds
     if (*_mainBufferOffset >= 64000) {
-        
         unsigned int speech_start_window;
         unsigned int speech_stop_window;
         
-        // 2400 amostras = (0,3 segundos) * (8000 amostras / segundo)
-        // 4800 amostras = (0,3 segundos) * (16000 amostras / segundo)
+        // 2400 samples = (0,3 seconds) * (8000 samples / second)
+        // 4800 samples = (0,3 seconds) * (16000 samples / second)
         //unsigned int samples = 4800;
-        unsigned int samples = (pAqData->kMainBufferSize == 320000)?4800:2400;
+        unsigned int samples = (pAqData->kMainBufferSize == 320000) ? 4800 : 2400;
         calculateZcVector(_mainBuffer, *_mainBufferOffset, _zero_cross_vector, zero_cross_vector_size, _zero_cross_vector_position, samples, window_size, level_threshold);
         if (hasSpeechStopped(_zero_cross_vector, *_zero_cross_vector_position, &speech_start_window, &speech_stop_window, pAqData->kMainBufferSize)) {
-            
-            
-            //rmorbach - Disable clip
-            /*unsigned int clip_start_offset;
-            unsigned int clip_stop_offset;
-            
-            // 24 janelas = (1 janela / 100 amostras) * (8000 amostras / segundo) * (0,3 segundos)
-            // 200 bytes / janela = (100 amostras / janela) * (2 bytes / amostra)
-            // O recorte comeca 24 janelas, ou 300 ms, antes do inicio da fala.
-            // Se houver menos de 300 ms entre o comeco do audio e o comeco da fala, o recorte comeca no inicio do audio.
-            clip_start_offset = (int) (speech_start_window - 24) >= 0 ? (speech_start_window - 24) * 200 : 0;
-            
-            // O recorte de fim de fala e apos 24 janelas, ou 300 ms, apos o fim da fala.
-            // Existe a garantia de pelo menos 500 ms de silencio apos o fim da fala,
-            // portanto nao e necessaria a verificacao de o buffer acabar antes de 300 ms apos fim de fala.
-            clip_stop_offset = (speech_stop_window + 24) * 200;
-            
-            *_mainBufferOffset = clip_stop_offset - clip_start_offset;
-            memmove(_mainBuffer, _mainBuffer + clip_start_offset, *_mainBufferOffset);
-            */
-            //Call silence detected callback method
-            //pAqData->callbackMethodImplementation(pAqData->callbackTarget, pAqData->callbackMethodSelector, (int)inBuffer->mAudioDataByteSize);
             pAqData->silenceCallbackMethodImplementation(pAqData->silenceCallbackTarget, pAqData->silenceCallbackMethodSelector, 1);
         }
         

@@ -1,10 +1,19 @@
-//
-//  RecognizerBuilderTests.m
-//  CPqDASRTests
-//
-//  Created by rodrigomorbach on 13/04/18.
-//  Copyright © 2018 CPqD. All rights reserved.
-//
+/*******************************************************************************
+ * Copyright 2017 CPqD. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
+
 
 #import <XCTest/XCTest.h>
 #import <CPqDASR/CPqDASR.h>
@@ -103,8 +112,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testCredentialNull {
-    
-    
+
     NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
     NSString * username = nil;
     NSString * password = nil;
@@ -131,7 +139,9 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testCreateRecogConfig {
  
-    NSString * wsURL = @"ws://vmh123.cpqd.com.br:8025/asr-server/asr";
+    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    NSString * username = @"estevan";
+    NSString * password = @"Thect195";
     
     //Change this value in order to test it
     int maxSentences = 5;
@@ -139,7 +149,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     CPqDASRRecognitionConfig * recogConfig = [[CPqDASRRecognitionConfig alloc] init];
     recogConfig.maxSentences = [NSNumber numberWithInteger: maxSentences];
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:wsURL userAgent:nil credentials:nil delegate:self] autoClose:NO] connectOnRecognize:NO] userName: nil password: nil];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:wsURL userAgent:nil credentials:@[username, password] delegate:self] autoClose:NO] connectOnRecognize:YES];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
@@ -154,7 +164,6 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
     [list addURI:@"builtin:slm/general"];
     
-    //TODO - In order to fully testing it is recommended to use File AudioSource.
     NSBundle * bundle = [NSBundle bundleForClass: [self class]];
     
     NSString * audioPath = [bundle pathForResource:@"cpf_8k" ofType:@"wav"];
