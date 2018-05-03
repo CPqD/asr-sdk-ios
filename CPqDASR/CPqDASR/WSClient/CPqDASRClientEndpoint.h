@@ -83,6 +83,11 @@ typedef void (^SendMessageBlock)(ASRMessage * responseMessage);
  */
 - (void)sendMessage:(ASRMessage *)message;
 
+/**
+ @brief send message to websocket server and call the passed block.
+ @param message to be sent
+ @param block to be invoked with WebSocket server response
+ */
 - (void)sendMessage:(ASRMessage *)message withCompletionBlock:(SendMessageBlock)block;
 
 /**

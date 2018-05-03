@@ -6,7 +6,7 @@ Baixe o conteúdo do repositório em seu computador usando o comando abaixo:
 
 `# git clone https://github.com/CPqD/asr-sdk-ios.git`
 
-Atualize as dependências do projeto utilizando o CocoaPods. Execute o comando abaixo na raíz do repositório:
+Atualize as dependências do projeto utilizando o CocoaPods. Execute o comando abaixo no repositório *CPqDASR*:
 
 `# pod install`
 
