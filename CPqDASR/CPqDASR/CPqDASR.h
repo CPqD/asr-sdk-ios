@@ -37,5 +37,6 @@ FOUNDATION_EXPORT const unsigned char CPqDASRVersionString[];
 #import <CPqDASR/CPqDASRRecognitionStatus.h>
 #import <CPqDASR/CPqDASRLanguageModelList.h>
 #import <CPqDASR/CPqDASRFileAudioSource.h>
+#import <CPqDASR/CPqDASRBufferAudioSource.h>
 
 

@@ -22,8 +22,8 @@
 
 @property (nonatomic, strong) NSString * filePath;
 @property (nonatomic, strong) NSInputStream * inputStream;
-@property (nonatomic, strong) NSData * availableData;
 @property (nonatomic) dispatch_queue_t filequeue;
+@property (nonatomic) BOOL finished;
 @end
 
 @implementation CPqDASRFileAudioSource
@@ -47,13 +47,13 @@
 #pragma mark - CPqDASRAudioSource methods
 
 - (void)start {
-    
     dispatch_async(self.filequeue, ^{
+        self.finished = NO;
         [CPqDASRLog logMessage:@"\n CPqDASRFileAudioSource start called \n"];
         
         self.inputStream = [[NSInputStream alloc] initWithFileAtPath: self.filePath];
         self.inputStream.delegate = self;
-        
+    
         NSRunLoop * runLoop = [NSRunLoop currentRunLoop];
         
         [self.inputStream scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
@@ -62,30 +62,37 @@
         
         [runLoop run];
     });
-    
-   
-    
 }
 
 - (NSData *)read {
     
-    if (self.inputStream == nil) {
-        return nil;
+    if (self.inputStream == nil || self.finished) {
+        return [NSData dataWithBytes:nil length:0];;
     }
 
-    return self.availableData;
+    uint8_t buff[1024];
+    NSInteger len = 0;
+    len = [self.inputStream read:buff maxLength:1024];
+    
+    if(len > 0) {
+        return [NSData dataWithBytes:buff length:len];
+    }
+    
+    return [NSData dataWithBytes:nil length:0];
 }
 
 - (void)close {
+    self.finished = YES;
     if (self.inputStream) {
         [self.inputStream close];
         [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        self.inputStream = nil;
     }
 }
 
 - (void)finish {
     [self close];
-    self.inputStream = nil;
+    self.inputStream = nil;    
 }
 
 #pragma mark -
@@ -96,36 +103,20 @@
     switch (eventCode) {
         case NSStreamEventHasBytesAvailable:
         {
-            uint8_t buff[1024];
-            NSInteger len = 0;
-            len = [(NSInputStream *) aStream read:buff maxLength:1024];
-            
-            if(len > 0) {
-                @synchronized (self) {
-                    self.availableData = [NSData dataWithBytes:buff length:len];
-                }
-                
-            } else {
-                @synchronized (self) {
-                    self.availableData = [NSData dataWithBytes:nil length:0];
-                }
-            }
-            
             [self.delegate audioSourceHasDataAvailable];
+            [NSThread sleepForTimeInterval:0.01];
         }
             break;
         case NSStreamEventEndEncountered: {
-            @synchronized (self) {
-                self.availableData = [NSData dataWithBytes:nil length:0];
-            }
-            [self.delegate audioSourceHasDataAvailable];
             [self close];
         }
+            break;
+        case NSStreamEventErrorOccurred: {
+            [self close];
+        }
+            break;
         default:
             break;
     }
-
 }
-
-
 @end

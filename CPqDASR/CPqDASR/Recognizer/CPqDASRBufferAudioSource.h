@@ -14,18 +14,17 @@
  * the License.
  ******************************************************************************/
 
-
-#import <Foundation/Foundation.h>
 #import <CPqDASR/CPqDASRAudioSource.h>
 
-@interface CPqDASRFileAudioSource : NSObject <CPqDASRAudioSource>
+@interface CPqDASRBufferAudioSource : NSObject <CPqDASRAudioSource>
 
 @property (nonatomic, weak) id<CPqDASRAudioSourceDelegate> delegate;
 
 /**
- @brief creates and audio source with a file in a give path
- @param path to audio file
- /*/
-- (instancetype)initWithFilePath:(NSString *)path;
+ @brief Writes the specified data to the circular buffer
+ @param data to be written
+ @return indicator of success
+ */
+- (BOOL)write:(NSData *)data;
 
 @end

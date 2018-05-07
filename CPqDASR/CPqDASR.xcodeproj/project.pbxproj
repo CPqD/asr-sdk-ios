@@ -27,6 +27,8 @@
 		22A8C414207BCDC000368870 /* CPqDASRRecognitionStatus.h in Headers */ = {isa = PBXBuildFile; fileRef = 22A8C413207BCDA700368870 /* CPqDASRRecognitionStatus.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		22AE223F20813DAB008D2D27 /* RecognizerBuilderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AE223E20813DAB008D2D27 /* RecognizerBuilderTests.m */; };
 		22AE224120813E25008D2D27 /* SpeechRecognizerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AE224020813E25008D2D27 /* SpeechRecognizerTests.m */; };
+		22B13504209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 22B13502209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		22B13505209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22B13503209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.m */; };
 		22C738162075111600762D6E /* CPqDASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C7380C2075111600762D6E /* CPqDASR.framework */; };
 		22C7381D2075111600762D6E /* CPqDASR.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7380F2075111600762D6E /* CPqDASR.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		22C73835207517EE00762D6E /* zc-e.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C73833207517EE00762D6E /* zc-e.h */; };
@@ -84,6 +86,8 @@
 		22A8C413207BCDA700368870 /* CPqDASRRecognitionStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPqDASRRecognitionStatus.h; sourceTree = "<group>"; };
 		22AE223E20813DAB008D2D27 /* RecognizerBuilderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RecognizerBuilderTests.m; sourceTree = "<group>"; };
 		22AE224020813E25008D2D27 /* SpeechRecognizerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SpeechRecognizerTests.m; sourceTree = "<group>"; };
+		22B13502209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPqDASRBufferAudioSource.h; sourceTree = "<group>"; };
+		22B13503209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPqDASRBufferAudioSource.m; sourceTree = "<group>"; };
 		22C7380C2075111600762D6E /* CPqDASR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CPqDASR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C7380F2075111600762D6E /* CPqDASR.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPqDASR.h; sourceTree = "<group>"; };
 		22C738102075111600762D6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -210,6 +214,8 @@
 				224F173220763E35008B1F61 /* CPqDASRMicAudioSource.m */,
 				2270F177208664860048498B /* CPqDASRFileAudioSource.h */,
 				2270F178208664860048498B /* CPqDASRFileAudioSource.m */,
+				22B13502209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.h */,
+				22B13503209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.m */,
 			);
 			path = Recognizer;
 			sourceTree = "<group>";
@@ -314,6 +320,7 @@
 				22C7381D2075111600762D6E /* CPqDASR.h in Headers */,
 				22C7385F207536DA00762D6E /* CPqDASRRecognitionResult.h in Headers */,
 				22C7387D2075442000762D6E /* CPqDASRSpeechRecognizerBuilder.h in Headers */,
+				22B13504209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.h in Headers */,
 				22C7387020753C5C00762D6E /* CPqDASRSpeechRecognizerProtocol.h in Headers */,
 				224F173320763E35008B1F61 /* CPqDASRMicAudioSource.h in Headers */,
 				224F173920765EDC008B1F61 /* CPqDASRSampleRate.h in Headers */,
@@ -491,6 +498,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22B13505209CEC5C00EE6A1C /* CPqDASRBufferAudioSource.m in Sources */,
 				22C7387E2075442000762D6E /* CPqDASRSpeechRecognizerBuilder.m in Sources */,
 				22C73836207517EE00762D6E /* zc-e.c in Sources */,
 				22A8C412207B88CF00368870 /* CPqDASRRecognitionConfig.m in Sources */,

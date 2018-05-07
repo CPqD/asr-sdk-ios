@@ -9,13 +9,20 @@
 /* Begin PBXBuildFile section */
 		223D9EFB209B6E1500DC4781 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 223D9EFA209B6E1500DC4781 /* AudioToolbox.framework */; };
 		224F174E20766046008B1F61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F174D20766046008B1F61 /* AppDelegate.swift */; };
-		224F175020766046008B1F61 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F174F20766046008B1F61 /* ViewController.swift */; };
+		224F175020766046008B1F61 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F174F20766046008B1F61 /* BaseViewController.swift */; };
 		224F175320766046008B1F61 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 224F175120766046008B1F61 /* Main.storyboard */; };
 		224F175520766046008B1F61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 224F175420766046008B1F61 /* Assets.xcassets */; };
 		224F175820766046008B1F61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 224F175620766046008B1F61 /* LaunchScreen.storyboard */; };
 		224F176320766046008B1F61 /* CPqDASRDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 224F176220766046008B1F61 /* CPqDASRDemoTests.swift */; };
 		224F17A2207683AC008B1F61 /* CPqDASR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224F17A0207683A6008B1F61 /* CPqDASR.framework */; };
 		224F17A3207683AC008B1F61 /* CPqDASR.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224F17A0207683A6008B1F61 /* CPqDASR.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2271756220A06B9900900876 /* BufferSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2271756120A06B9900900876 /* BufferSampleViewController.swift */; };
+		2271756820A076FE00900876 /* pizza-veg-8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2271756420A076FE00900876 /* pizza-veg-8k.wav */; };
+		2271756920A076FE00900876 /* silence-8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2271756520A076FE00900876 /* silence-8k.wav */; };
+		2271756A20A076FE00900876 /* hetero_segments_8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2271756620A076FE00900876 /* hetero_segments_8k.wav */; };
+		2271756B20A076FE00900876 /* cpf_8k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2271756720A076FE00900876 /* cpf_8k.wav */; };
+		2271756E20A0785C00900876 /* MicSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2271756D20A0785C00900876 /* MicSampleViewController.swift */; };
+		2271757020A0922400900876 /* FileSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2271756F20A0922400900876 /* FileSampleViewController.swift */; };
 		22C22844209B33B0004EE4B9 /* RecognizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C22843209B33B0004EE4B9 /* RecognizeButton.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,7 +54,7 @@
 		223D9EFA209B6E1500DC4781 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		224F174A20766046008B1F61 /* CPqDASRDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CPqDASRDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		224F174D20766046008B1F61 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		224F174F20766046008B1F61 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		224F174F20766046008B1F61 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		224F175220766046008B1F61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		224F175420766046008B1F61 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		224F175720766046008B1F61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -56,6 +63,13 @@
 		224F176220766046008B1F61 /* CPqDASRDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPqDASRDemoTests.swift; sourceTree = "<group>"; };
 		224F176420766046008B1F61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		224F17A0207683A6008B1F61 /* CPqDASR.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CPqDASR.framework; sourceTree = "<group>"; };
+		2271756120A06B9900900876 /* BufferSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BufferSampleViewController.swift; sourceTree = "<group>"; };
+		2271756420A076FE00900876 /* pizza-veg-8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "pizza-veg-8k.wav"; sourceTree = "<group>"; };
+		2271756520A076FE00900876 /* silence-8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "silence-8k.wav"; sourceTree = "<group>"; };
+		2271756620A076FE00900876 /* hetero_segments_8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hetero_segments_8k.wav; sourceTree = "<group>"; };
+		2271756720A076FE00900876 /* cpf_8k.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cpf_8k.wav; sourceTree = "<group>"; };
+		2271756D20A0785C00900876 /* MicSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicSampleViewController.swift; sourceTree = "<group>"; };
+		2271756F20A0922400900876 /* FileSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSampleViewController.swift; sourceTree = "<group>"; };
 		22C22843209B33B0004EE4B9 /* RecognizeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognizeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,9 +123,10 @@
 		224F174C20766046008B1F61 /* CPqDASRDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2271756C20A0784700900876 /* Controller */,
+				2271756320A076FE00900876 /* Resources */,
 				224F17A0207683A6008B1F61 /* CPqDASR.framework */,
 				224F174D20766046008B1F61 /* AppDelegate.swift */,
-				224F174F20766046008B1F61 /* ViewController.swift */,
 				224F175120766046008B1F61 /* Main.storyboard */,
 				224F175420766046008B1F61 /* Assets.xcassets */,
 				224F175620766046008B1F61 /* LaunchScreen.storyboard */,
@@ -128,6 +143,28 @@
 				224F176420766046008B1F61 /* Info.plist */,
 			);
 			path = CPqDASRDemoTests;
+			sourceTree = "<group>";
+		};
+		2271756320A076FE00900876 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2271756420A076FE00900876 /* pizza-veg-8k.wav */,
+				2271756520A076FE00900876 /* silence-8k.wav */,
+				2271756620A076FE00900876 /* hetero_segments_8k.wav */,
+				2271756720A076FE00900876 /* cpf_8k.wav */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2271756C20A0784700900876 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2271756120A06B9900900876 /* BufferSampleViewController.swift */,
+				224F174F20766046008B1F61 /* BaseViewController.swift */,
+				2271756D20A0785C00900876 /* MicSampleViewController.swift */,
+				2271756F20A0922400900876 /* FileSampleViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,8 +249,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2271756A20A076FE00900876 /* hetero_segments_8k.wav in Resources */,
 				224F175820766046008B1F61 /* LaunchScreen.storyboard in Resources */,
+				2271756820A076FE00900876 /* pizza-veg-8k.wav in Resources */,
 				224F175520766046008B1F61 /* Assets.xcassets in Resources */,
+				2271756B20A076FE00900876 /* cpf_8k.wav in Resources */,
+				2271756920A076FE00900876 /* silence-8k.wav in Resources */,
 				224F175320766046008B1F61 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -232,9 +273,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				224F175020766046008B1F61 /* ViewController.swift in Sources */,
+				2271756220A06B9900900876 /* BufferSampleViewController.swift in Sources */,
+				224F175020766046008B1F61 /* BaseViewController.swift in Sources */,
+				2271757020A0922400900876 /* FileSampleViewController.swift in Sources */,
 				224F174E20766046008B1F61 /* AppDelegate.swift in Sources */,
 				22C22844209B33B0004EE4B9 /* RecognizeButton.swift in Sources */,
+				2271756E20A0785C00900876 /* MicSampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,8 +463,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = AAR5354LHH;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/CPqDASRDemo",
@@ -433,7 +478,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = br.com.cpqd.CPqDASRDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "103dbc3f-2ad5-479f-804a-269e2cb67ad5";
+				PROVISIONING_PROFILE_SPECIFIER = "CPqD In House dist";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -146,7 +146,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testNoInputTimeout {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:nil delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
@@ -174,13 +174,66 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     [self waitForExpectations:@[testExpectation] timeout: 10.0];
 }
 
+- (void)testRecognizeBufferAudioSource {
+ 
+    //Delay to deliver packets to recognizer, in seconds
+    NSInteger packetDelay = 0.3;
+    
+    NSString * audioPath = [self.currentBundle pathForResource:@"pizza-veg-8k" ofType:@"wav"];
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+        XCTAssertTrue([[recognitionResult.alternatives firstObject] score] > 90, @"Score is higher than 90");
+        XCTAssertTrue(recognitionResult.alternatives.count == recognitionResult.alternatives.count, @"Number of alternatives is 1");
+        [testExpectation fulfill];
+    };
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI:@"builtin:slm/general"];
+    
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
+
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
+    
+    [self.recognizer recognize:audioSource languageModel: list];
+    
+    [inputStream open];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 4];
+    
+    while (1) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    
+    [self waitForExpectations:@[testExpectation] timeout: 20.0];
+    
+    
+}
+
 - (void)testCloseWhileRecognizing {
     //TODO
 }
 
 - (void)testCloseWithoutRecognize {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:nil delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
@@ -202,7 +255,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testCancelWhileRecognizing {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:nil delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
@@ -236,7 +289,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testRecognizeAfterSessionTimeout {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:nil delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     

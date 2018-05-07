@@ -19,53 +19,49 @@ import CPqDASR
 import AudioToolbox
 import AVFoundation
 
-class ViewController: UIViewController {
+class BaseViewController: UIViewController {
     
     var recognizer : CPqDASRSpeechRecognizer?
-    var audioSource: CPqDASRMicAudioSource?
-    let wsURL = "wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k"
+    let wsURL = "wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k"    
     let username = "estevan";
     let password = "Thect195";
     let languageModelList = CPqDASRLanguageModelList();
     let beginRecordingSoundId = 1115
     let endRecordingSoundId = 1116
+    var audioSource : CPqDASRAudioSource?
     
-        
     @IBOutlet weak var recognizeButton: RecognizeButton!
     let config = CPqDASRRecognitionConfig();
     
+
     @IBOutlet weak var resultTextView: UITextView!
     @IBOutlet weak var stateLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+            
         languageModelList.addURI("builtin:slm/general")
         self.stateLabel.text = "Idle";
-        
         config.continuousMode = NSNumber(value: false);
         config.maxSentences = NSNumber(value: 3);
+        config.recognitionTimeoutSeconds = 10;
+        config.recognitionTimeoutEnabled = true;
         
         let builder = CPqDASRSpeechRecognizerBuilder()
             .serverUrl(wsURL)
             .autoClose(true)
             .connect(onRecognize: true)
             .recognitionDelegate(self)
-            .userName(self.username, password: self.password)
-        
+            .userName(username, password: password)
         recognizer = builder?.build()
-        audioSource = CPqDASRMicAudioSource(delegate: self, andSampleRate: .rate8K);
-        audioSource?.setDetectEndOfSpeech(false)
     }
     
-    
-    func recognize() {
-        
-        self.resultTextView.text = ""
-        recognizer?.recognize(audioSource, languageModel: languageModelList, recogConfig: config)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated);
+        recognizer?.cancelRecognition();
+        self.recognizeButton.recordingState = .Idle;
     }
     
-    @IBAction func tryToConnect(_ sender: UIButton) {
-        self.recognize()
-    }
     
     func showFinalResult(result: CPqDASRRecognitionResult) {
         if result.alternatives.count > 0 {
@@ -86,20 +82,11 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController : CPqDASRMicAudioSourceDelegate {
-    func didFailWithError(_ error: Error!) {
-        self.stateLabel.text = "ERROR \(error.localizedDescription)"
-        debugPrint("CPqDASRMicAudioSourceDelegate fail with error \(error.localizedDescription)")
-        //If there is an error with microphone configuration, cancel current recognition.
-        self.recognizer?.cancelRecognition();
-    }
-}
-
-extension ViewController : CPqDASRRecognitionDelegate {
+extension BaseViewController : CPqDASRRecognitionDelegate {
     func cpqdASRDidStartListening() {
         self.stateLabel.text = "Listening"
+        
         self.recognizeButton.recordingState = .Recording
-        self.playSound(soundId: beginRecordingSoundId)
     }
     
     func cpqdASRDidStartSpeech(_ time: TimeInterval) {
@@ -108,7 +95,7 @@ extension ViewController : CPqDASRRecognitionDelegate {
     
     func cpqdASRDidStopSpeech(_ time: TimeInterval) {
         self.stateLabel.text = "Speech stopped"
-    
+        
     }
     
     func cpqdASRDidReturnPartialResult(_ result: CPqDASRRecognitionResult!) {
@@ -116,36 +103,37 @@ extension ViewController : CPqDASRRecognitionDelegate {
     }
     
     func cpqdASRDidReturnFinalResult(_ result: CPqDASRRecognitionResult!) {
-        self.playSound(soundId: endRecordingSoundId)
-        self.recognizeButton.recordingState = .Idle
         switch result.status {
-            case .recognized:
-                self.stateLabel.text = "Final result"
-                showFinalResult(result: result);
-            case .canceled:
-                self.stateLabel.text = "Recognition cancelled"
-            case .earlySpeech:
-                self.stateLabel.text = "Early speech"
-            case .failure:
-                self.stateLabel.text = "Failure"
-            case .maxSpeech:
-                self.stateLabel.text = "Max speech"
-            case .noInputTimeout:
-                self.stateLabel.text = "No input timeout"
-            case .noMatch:
-                self.stateLabel.text = "No match"
-            case .noSpeech:
-                self.stateLabel.text = "No speech"
-            case .processing:
-                self.stateLabel.text = "Processing"
-            case .recognitionTimeout:
-                self.stateLabel.text = "Recognition timeout"
+        case .recognized:
+            self.stateLabel.text = "Final result"
+            showFinalResult(result: result);
+        case .canceled:
+            self.stateLabel.text = "Recognition cancelled"
+        case .earlySpeech:
+            self.stateLabel.text = "Early speech"
+        case .failure:
+            self.stateLabel.text = "Failure"
+        case .maxSpeech:
+            self.stateLabel.text = "Max speech"
+        case .noInputTimeout:
+            self.stateLabel.text = "No input timeout"
+        case .noMatch:
+            self.stateLabel.text = "No match"
+        case .noSpeech:
+            self.stateLabel.text = "No speech"
+        case .processing:
+            self.stateLabel.text = "Processing"
+        case .recognitionTimeout:
+            self.stateLabel.text = "Recognition timeout"
         }
+        
+        self.recognizeButton.recordingState = .Idle
     }
     
     func cpqdASRDidFailWithError(_ error: CPqDASRRecognitionError!) {
-        self.recognizeButton.recordingState = .Idle
         debugPrint("cpqdASRDidFailWithError fail with error \(error.message)")
         self.stateLabel.text = "Closed"
+        self.recognizeButton.recordingState = .Idle
     }
 }
+
