@@ -223,8 +223,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     }
     
     [self waitForExpectations:@[testExpectation] timeout: 20.0];
-    
-    
+        
 }
 
 - (void)testCloseWhileRecognizing {

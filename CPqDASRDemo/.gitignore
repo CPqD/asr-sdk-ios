@@ -5,9 +5,6 @@
 # Framework
 CPqDASR.framework
 
-# Audio files
-CPqDASRDemo/Resources/*.wav
-
 ## Build generated
 build/
 DerivedData/

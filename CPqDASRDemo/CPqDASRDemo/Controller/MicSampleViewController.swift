@@ -29,7 +29,7 @@ class MicSampleViewController: BaseViewController {
         audioSource = CPqDASRMicAudioSource(delegate: self, andSampleRate: captureSampleRate);
         
         if let ad = audioSource as? CPqDASRMicAudioSource {
-            ad.setDetectEndOfSpeech(false)
+            ad.setDetectEndOfSpeech(true)
         }
     }
     

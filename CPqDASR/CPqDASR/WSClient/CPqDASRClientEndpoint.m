@@ -276,12 +276,9 @@
     //RECOGNITION_RESULT_RESPONSE
     if ([asrMessage isKindOfClass:[ASRRecognitionResultMessage class]]) {
         
-        [CPqDASRLog logMessage:@"\n Message is ASRRecognitionResultMessage \n "];
-        
         ASRRecognitionResultMessage * resultResponse = (ASRRecognitionResultMessage *)asrMessage;
         
         //Now, the state is idle again
-        self.status = ASRSessionStatusIdle;
         self.alreadyReturnResult = YES;
         
         CPqDASRRecognitionResult * result = [[CPqDASRRecognitionResult alloc] init];
@@ -318,7 +315,7 @@
         
         result.alternatives = [NSArray arrayWithArray:alternatives];
         
-        [CPqDASRLog logMessage:[NSString stringWithFormat:@"\nCPqDASRClientEndpoint Status is : %ld", result.status]];
+        [CPqDASRLog logMessage:[NSString stringWithFormat:@"\nCPqDASRClientEndpoint Status is : %ld", (long)result.status]];
         
         if (resultResponse.isFinalResult) {
             [self.delegate cpqdASRDidReturnFinalResult: result];
@@ -330,10 +327,6 @@
     else if([asrMessage isKindOfClass:[ASRResponseMessage class]]){
         
         ASRResponseMessage * response = (ASRResponseMessage *)asrMessage;
-        
-        if(response.sessionStatus) {
-            self.status = response.sessionStatus;
-        }
         
         if (self.responseQueue.count > 0) {
             [CPqDASRLog logMessage:@"self.responseQueue.count > 0"];

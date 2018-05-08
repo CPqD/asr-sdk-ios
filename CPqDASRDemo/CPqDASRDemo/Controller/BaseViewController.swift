@@ -51,7 +51,7 @@ class BaseViewController: UIViewController {
             .serverUrl(wsURL)
             .autoClose(true)
             .connect(onRecognize: true)
-            .recognitionDelegate(self)
+            .addRecognitionDelegate(self)
             .userName(username, password: password)
         recognizer = builder?.build()
     }
@@ -99,6 +99,7 @@ extension BaseViewController : CPqDASRRecognitionDelegate {
     }
     
     func cpqdASRDidReturnPartialResult(_ result: CPqDASRRecognitionResult!) {
+        showFinalResult(result: result)
         self.stateLabel.text = "Partial result"
     }
     

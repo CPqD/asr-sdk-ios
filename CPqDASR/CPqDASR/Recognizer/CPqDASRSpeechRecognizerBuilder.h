@@ -42,7 +42,7 @@
 /**
  Recognition listener
  */
-@property (nonatomic, weak, readonly) id<CPqDASRRecognitionDelegate> recognitionDelegate;
+@property (nonatomic, readonly) NSArray<id<CPqDASRRecognitionDelegate>> * recognitionDelegates;
 
 /**
  Capture sample rate
@@ -124,7 +124,7 @@
  *            the listener object.
  * @return the Builder object.
  */
-- (CPqDASRSpeechRecognizerBuilder *)recognitionDelegate:(id<CPqDASRRecognitionDelegate>)delegate;
+- (CPqDASRSpeechRecognizerBuilder *)addRecognitionDelegate:(id<CPqDASRRecognitionDelegate>)delegate;
 
 
 /**

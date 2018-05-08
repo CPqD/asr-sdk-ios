@@ -66,7 +66,7 @@
         
         [CPqDASRLog logMessage:@"CPqDASRClientEndpoint created"];
                         
-        if (self.builder.recognitionDelegate == nil) {
+        if (self.builder.recognitionDelegates == nil) {
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"recognitionDelegate can not be null" userInfo:nil];
         }
         self.shouldStartRecognition = YES;
@@ -104,7 +104,6 @@
 - (void)startRecognition {
     
     if ([self.asrClientEndpoint getStatus] == ASRSessionStatusListening) {
-        
         [CPqDASRLog logMessage:@"startRecognition status is already listening"];
         return;
     }
@@ -172,7 +171,7 @@
 
 - (void)sendAudio:(NSData *)data isLastPacket:(BOOL)lastPacket {
     
-    if ( [self.asrClientEndpoint getStatus] != ASRSessionStatusListening ) {
+    if ( [self.asrClientEndpoint getStatus] != ASRSessionStatusListening ) {        
         return;
     }
     
@@ -227,6 +226,8 @@
 
 - (void)close {
     
+    [CPqDASRLog logMessage:@"CPqDSpeechRecognizer close called"];
+    
     [self.audioSource close];
     if(![self.asrClientEndpoint isOpen]){
         return;
@@ -273,11 +274,14 @@
 - (void)cpqdASRDidFailWithError:(CPqDASRRecognitionError *)error {
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidFailWithError ---"];
-        [self.builder.recognitionDelegate cpqdASRDidFailWithError:error];
-        if(self.builder.autoClose){
-            [self close];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidFailWithError:error];
         }
     });
+    
+    if(self.builder.autoClose){
+        [self close];
+    }
 }
 
 - (void)cpqdASRDidReturnFinalResult:(CPqDASRRecognitionResult *)result {
@@ -285,14 +289,18 @@
     [self.audioSource finish];
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:[NSString stringWithFormat:@"\n\nCPqDASR - cpqdASRDidReturnFinalResult --- %ld", (long)result.status]];
-        [self.builder.recognitionDelegate cpqdASRDidReturnFinalResult:result];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidReturnFinalResult:result];
+        }
     });
 }
 
 - (void)cpqdASRDidReturnPartialResult:(CPqDASRRecognitionResult *)result {
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidReturnPartialResult ---"];
-        [self.builder.recognitionDelegate cpqdASRDidReturnPartialResult:result];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidReturnPartialResult:result];
+        }
     });
 }
 
@@ -300,22 +308,30 @@
     [self startRecording];
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStartListening ---"];
-        [self.builder.recognitionDelegate cpqdASRDidStartListening];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidStartListening];
+        }
     });
 }
 
 - (void)cpqdASRDidStartSpeech:(NSTimeInterval)time {
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStartSpeech ---"];
-        [self.builder.recognitionDelegate cpqdASRDidStartSpeech:time];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidStartSpeech:time];
+        }
     });
 }
 
 - (void)cpqdASRDidStopSpeech:(NSTimeInterval)time {
+    @synchronized (self) {
+        [self.audioSource finish];
+    };
     dispatch_async(dispatch_get_main_queue(), ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStopSpeech ---"];
-        [self.audioSource finish];
-        [self.builder.recognitionDelegate cpqdASRDidStopSpeech:time];
+        for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
+            [delegate cpqdASRDidStopSpeech:time];
+        }
     });
 }
 

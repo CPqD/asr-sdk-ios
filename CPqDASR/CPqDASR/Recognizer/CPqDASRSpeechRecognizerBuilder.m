@@ -38,6 +38,7 @@
         _maxSessionIdleSeconds = 30;
         _connectOnRecognize = false;
         _autoClose = false;
+        _recognitionDelegates = [[NSArray alloc] init];
     }
     return self;
 }
@@ -49,7 +50,7 @@
     if(self = [[CPqDASRSpeechRecognizerBuilder alloc] init]){
         _url = [NSURL URLWithString:url];
         _credentials = credentials;
-        _recognitionDelegate = delegate;
+        _recognitionDelegates = [NSArray arrayWithObject:delegate];
         _userAgent = userAgent;
     }
     return self;
@@ -99,8 +100,17 @@
     return self;
 }
 
-- (CPqDASRSpeechRecognizerBuilder *)recognitionDelegate:(id<CPqDASRRecognitionDelegate>)delegate {
-    _recognitionDelegate = delegate;
+- (CPqDASRSpeechRecognizerBuilder *)addRecognitionDelegate:(id<CPqDASRRecognitionDelegate>)delegate {
+    
+    if (delegate == nil) {
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"CPqDASRRecognitionDelegate can not be null" userInfo:nil];
+    }
+    
+    NSMutableArray <id<CPqDASRRecognitionDelegate>> * delegates = [[NSMutableArray alloc] initWithArray:_recognitionDelegates];
+    [delegates addObject:delegate];
+    
+    _recognitionDelegates = [NSArray arrayWithArray:delegates];
+    
     return self;
 }
 
@@ -117,10 +127,5 @@
 - (CPqDASRSpeechRecognizer *)build {
     return [[CPqDASRSpeechRecognizer alloc] initWithBuilder: self];
 }
-
-
-
-
-
 
 @end
