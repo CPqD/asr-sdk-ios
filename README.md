@@ -6,7 +6,7 @@ Para maiores informações, consulte [a documentação do projeto](https://speec
 
 ## Aplicação de exemplo
 
-A aplicação de demonstração está no diretório [CPqDASRDemo](https://github.com/CPqD/asr-sdk-ios/tree/master/CPqDASRDemo).
+A aplicação de demonstração está no diretório [CPqDASRDemo](CPqDASRDemo/).
 
 ## Uso
 
@@ -32,7 +32,7 @@ CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder a
                                                 userName: username password: password];
 
 ```
-É possível adicionar vários *delegates* de reconhecimento utilizando o método `addRecognitionDelegate` de `CPqDASRSpeechRecognizerBuilder`. Todas as instâncias devem implementar o protocolo [CPqDASRRecognitionDelegate](blob/master/CPqDASR/CPqDASR/Interface/CPqDASRRecognitionDelegate.h). 
+É possível adicionar vários *delegates* de reconhecimento utilizando o método `addRecognitionDelegate` de `CPqDASRSpeechRecognizerBuilder`. Todas as instâncias devem implementar o protocolo [CPqDASRRecognitionDelegate](CPqDASR/CPqDASR/Interface/CPqDASRRecognitionDelegate.h). 
 
 Após isso, basta criar uma instância de `CPqDASRSpeechRecognizer` utilizando o método `build` de `CPqDASRSpeechRecognizerBuilder`.
 
@@ -46,7 +46,7 @@ CPqDASRSpeechRecognizer * recognizer = [builder build];
 ```
 
 ### Criar uma fonte de áudio para o reconhecimento
-Para que o ASR possa realizar um reconhecimento de fala é preciso fornecer uma fonte de áudio para a instância de `CPqDASRSpeechRecognizer`. Uma fonte de áudio pode ser qualquer classe que implemente o protocolo [CPqDASRAudioSource](blob/master/CPqDASR/CPqDASR/Interface/CPqDASRAudioSource.h).
+Para que o ASR possa realizar um reconhecimento de fala é preciso fornecer uma fonte de áudio para a instância de `CPqDASRSpeechRecognizer`. Uma fonte de áudio pode ser qualquer classe que implemente o protocolo [CPqDASRAudioSource](CPqDASR/CPqDASR/Interface/CPqDASRAudioSource.h).
 
 O framework CPqDASR já fornece três fontes de áudio que podem ser utilizadas pela aplicação para realizar um reconhecimento.
 
@@ -62,7 +62,7 @@ let audioSource = CPqDASRMicAudioSource(delegate: self, andSampleRate: captureSa
 ```objc
 [[CPqDASRMicAudioSource alloc] initWithDelegate:self andSampleRate: captureSampleRate]; 
 ```
-Deve ser fornecido um *delegate* responsável por implementar o protocol [CPqDASRMicAudioSourceDelegate](blob/master/CPqDASR/CPqDASR/Recognizer/CPqDASRMicAudioSource.h).
+Deve ser fornecido um *delegate* responsável por implementar o protocol [CPqDASRMicAudioSourceDelegate](CPqDASR/CPqDASR/Recognizer/CPqDASRMicAudioSource.h).
 
 Também deve ser fornecido a taxa de amostragem para captura de áudio, podendo ser 8 ou 16 KHz.
 
@@ -128,7 +128,7 @@ recognizer.recognize(audioSource, languageModel: languageModelList)
 ```objc
 [recognizer recognize:audioSource languageModel: languageModelList];
 ```
-Opcionalmente, para cada novo reconhecimento pode ser fornecido um objeto com parâmetros a serem utilizados somente para aquele reconhecimento. O objeto a ser utilizado é uma instância de [CPqDASRRecognitionConfig](blob/master/CPqDASR/CPqDASR/Model/CPqDASRRecognitionConfig.h).
+Opcionalmente, para cada novo reconhecimento pode ser fornecido um objeto com parâmetros a serem utilizados somente para aquele reconhecimento. O objeto a ser utilizado é uma instância de [CPqDASRRecognitionConfig](CPqDASR/CPqDASR/Model/CPqDASRRecognitionConfig.h).
 
 **Swift**:
 ```swift
@@ -178,4 +178,4 @@ Licença
 
 Copyright (c) 2018 CPqD. Todos os direitos reservados.
 
-Publicado sob a licença Apache Software 2.0, veja [LICENSE](blob/master/LICENSE).
+Publicado sob a licença Apache Software 2.0, veja [LICENSE](LICENSE).
