@@ -19,7 +19,7 @@ Esse processo copiará o arquivo *CPqDASR.framework* compilado para dentro do pr
 Abra o projeto CPqDASRDemo no Xcode e instale no dispositivo desejado.
 
 ## Créditos:
-Alguns ícones utilizados na aplicação de demo foram baixados em [https://flaticon.com](flaticon.com);
-* Nota musical: [http://www.freepik.com](Freepik). Licença [http://creativecommons.org/licenses/by/3.0/](Creative Commons BY 3.0).
-* Camadas: [https://www.flaticon.com/authors/smashicons](Smashicons). Licença [http://creativecommons.org/licenses/by/3.0/](Creative Commons BY 3.0).
+Alguns ícones utilizados na aplicação de demo foram baixados em [flaticon.com](https://flaticon.com);
+* Nota musical: [http://www.freepik.com](Freepik). Licença [Creative Commons by 3.0](http://creativecommons.org/licenses/by/3.0/).
+* Camadas: [Smashicons](https://www.flaticon.com/authors/smashicons). Licença [Creative Commons by 3.0](http://creativecommons.org/licenses/by/3.0/).
 

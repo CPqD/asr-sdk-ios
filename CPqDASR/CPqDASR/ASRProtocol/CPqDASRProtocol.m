@@ -295,9 +295,7 @@ NSString *const kASRProtocolERRInvalidParameterValue = @"ERROR_INVALID_PARAMETER
     }
     
     message = [message stringByAppendingString: [NSString stringWithFormat:@"\r\n%@\r\n", languageModelContent]];
-    
-    [CPqDASRLog logMessage: [NSString stringWithFormat:@"Start recognition create message : %@ ", message]];
-    
+        
     return message;
 }
 
