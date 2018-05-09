@@ -189,13 +189,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ocd-io-xA1" customClass="RecognizeButton" customModule="CPqDASRDemo" customModuleProvider="target">
-                                <rect key="frame" x="137" y="516" width="100" height="100"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ocd-io-xA1" customClass="RecognizeButton" customModule="CPqDASRDemo" customModuleProvider="target">
+                                <rect key="frame" x="137.5" y="516" width="100" height="100"/>
                                 <color key="backgroundColor" red="0.0" green="0.58823529409999997" blue="0.53333333329999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="Myv-5G-yNg"/>
                                     <constraint firstAttribute="height" constant="100" id="ZBf-mC-KiP"/>
                                 </constraints>
+                                <state key="normal" image="buffer"/>
                                 <connections>
                                     <action selector="recognize:" destination="XKt-HU-hlm" eventType="touchUpInside" id="dzj-U9-x3j"/>
                                 </connections>
@@ -256,6 +257,7 @@
                                     <constraint firstAttribute="width" constant="100" id="iPA-jr-xa1"/>
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" image="music"/>
                                 <connections>
                                     <action selector="recognize:" destination="kOS-3V-jQT" eventType="touchUpInside" id="out-bS-hC4"/>
                                 </connections>
@@ -317,6 +319,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="buffer" width="45" height="45"/>
         <image name="mic" width="45" height="45"/>
+        <image name="music" width="45" height="45"/>
     </resources>
 </document>

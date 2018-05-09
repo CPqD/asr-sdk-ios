@@ -216,11 +216,17 @@
 
 - (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
     [CPqDASRLog logMessage:[NSString stringWithFormat:@"webSocket:didCloseWithCode:reason:wasClean: %@ Code:%ld", reason, (long)code]];
+    
     self.status = ASRSessionStatusIdle;
     
     CPqDASRRecognitionError * recognitionError = [[CPqDASRRecognitionError alloc] init];
     recognitionError.code = CPqDASRRecognitionErrorCodeFailure;
     
+    // Session closed by the user, not necessary to call delegate.
+    if (code == 1000) {
+        return;
+    }
+        
     if (code != 1000 && !self.alreadyReturnResult) {
         recognitionError.code = CPqDASRRecognitionErrorCodeFailure;
     }

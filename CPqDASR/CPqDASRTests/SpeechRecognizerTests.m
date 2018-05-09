@@ -52,24 +52,29 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     self.wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
     self.password = @"Thect195";
     self.username = @"estevan";
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:@[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: YES] maxSessionIdleSeconds: 5];
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials:@[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: YES] maxSessionIdleSeconds: 2];
     self.recognizer = [builder build];
 }
 
 - (void)testBasicGrammar {
     
-    NSString * audioPath = [self.currentBundle pathForResource:@"cpf_8k" ofType:@"wav"];
+    NSString * audioName = @"cpf_8k";
+    NSString * grammarUri = @"builtin:grammar/cpf";
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
-        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"CPF recognized");
-        XCTAssertNotNil([[recognitionResult.alternatives firstObject] interpretations], @"There are interpretations");
+        XCTAssertTrue(recognitionResult.alternatives.count > 0, @"Number of alternatives is %lu", (unsigned long)recognitionResult.alternatives.count);
+        XCTAssertTrue([recognitionResult.alternatives.firstObject score] > 90, @"Score is higher than 90");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        XCTAssertNotNil([[recognitionResult.alternatives firstObject] interpretations], @"Contains interpretations");
         [testExpectation fulfill];
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:grammar/cpf"];
+    [list addURI: grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -79,19 +84,22 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testBasicSLM {
-    NSString * audioPath = [self.currentBundle pathForResource:@"pizza-veg-8k" ofType:@"wav"];
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
         XCTAssertTrue([[recognitionResult.alternatives firstObject] score] > 90, @"Score is higher than 90");
-        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Pizza recognized");
-        XCTAssertNotNil([[recognitionResult.alternatives firstObject] interpretations], @"There are interpretations");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        [weakSelf.recognizer close];
         [testExpectation fulfill];
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:slm/general"];
+    [list addURI: grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -101,7 +109,11 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testNoMatchGrammar {
-    NSString * audioPath = [self.currentBundle pathForResource:@"pizza-veg-8k" ofType:@"wav"];
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:grammar/cpf";
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
@@ -112,7 +124,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:grammar/number"];
+    [list addURI: grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -124,17 +136,21 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testNoSpeech {
     
-    NSString * audioPath = [self.currentBundle pathForResource:@"silence-8k" ofType:@"wav"];
+    NSString * audioName = @"silence-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
         XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusNoSpeech, @"No speech");
+        [weakSelf.recognizer close];
         [testExpectation fulfill];
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:slm/general"];
+    [list addURI: grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -146,51 +162,91 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 
 - (void)testNoInputTimeout {
     
+    
+    NSString * audioName = @"cpf_8k";
+    NSString * grammarUri = @"builtin:grammar/cpf";
+    NSInteger noInputTimeoutMillis = 1000;
+    BOOL noInputTimeoutEnabled = YES;
+    NSInteger packetDelay = 0.3;
+    
     CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
-    NSString * audioPath = [self.currentBundle pathForResource:@"cpf_8k" ofType:@"wav"];
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
-        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusNoInputTimeout, @"No input timeout");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusNoInputTimeout, @"Result is NoinputTimeout");
         XCTAssertTrue(recognitionResult.alternatives.count == 0, @"Number of alternatives is zero");
+        [recognizer close];
         [testExpectation fulfill];
     };
     
+    
+    CPqDASRRecognitionConfig * recogConfig = [[CPqDASRRecognitionConfig alloc] init];
+    recogConfig.noInputTimeoutMilis = [NSNumber numberWithInteger: noInputTimeoutMillis];
+    recogConfig.noInputTimeoutEnabled = [NSNumber numberWithInteger: noInputTimeoutEnabled];
+    
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:grammar/cpf"];
+    [list addURI: grammarUri];
     
-    CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
     
-    [recognizer recognize:audioSource languageModel: list];
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
     
-    //After start recognition, block until No input timeout
-    [NSThread sleepForTimeInterval: 20];
+    [recognizer recognize:audioSource languageModel: list recogConfig: recogConfig];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 5];
+    
+    [inputStream open];
+    
+    while (1) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+    }
     
     [self waitForExpectations:@[testExpectation] timeout: 10.0];
 }
 
 - (void)testRecognizeBufferAudioSource {
  
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
     //Delay to deliver packets to recognizer, in seconds
     NSInteger packetDelay = 0.3;
     
-    NSString * audioPath = [self.currentBundle pathForResource:@"pizza-veg-8k" ofType:@"wav"];
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
         XCTAssertTrue([[recognitionResult.alternatives firstObject] score] > 90, @"Score is higher than 90");
         XCTAssertTrue(recognitionResult.alternatives.count == recognitionResult.alternatives.count, @"Number of alternatives is 1");
+        [weakSelf.recognizer close];
         [testExpectation fulfill];
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:slm/general"];
+    [list addURI: grammarUri];
     
     CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
 
@@ -226,56 +282,371 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
         
 }
 
+- (void)testRecognizeBufferBlockRead {
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    NSInteger noInputTimeout = 8000;
+    //Big delay to block read thread
+    NSInteger packetDelay = 0.5;
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+        XCTAssertTrue(recognitionResult.status == CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        XCTAssertTrue(recognitionResult.alternatives.count == recognitionResult.alternatives.count, @"Number of alternatives is %lu", (unsigned long)recognitionResult.alternatives.count);
+        [weakSelf.recognizer close];
+        [testExpectation fulfill];
+    };
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
+    
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
+    
+    CPqDASRRecognitionConfig * recogConfig = [[CPqDASRRecognitionConfig alloc] init];
+    recogConfig.noInputTimeoutEnabled = [NSNumber numberWithBool:YES];
+    recogConfig.noInputTimeoutMilis = [NSNumber numberWithInteger:noInputTimeout];
+    
+    [self.recognizer recognize:audioSource languageModel: list recogConfig:recogConfig];
+    
+    [inputStream open];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 4];
+    
+    while (1) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    
+    [self waitForExpectations:@[testExpectation] timeout: 20.0];
+    
+}
+
+- (void)testRecognizeMaxWaitSeconds {
+    //TODO - maxWaitSeconds is not being used so far.
+}
+
 - (void)testCloseWhileRecognizing {
-    //TODO
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    //Delay to deliver packets to recognizer, in seconds
+    NSInteger packetDelay = 0.3;
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
+    
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
+    
+    [self.recognizer recognize:audioSource languageModel: list];
+    
+    [inputStream open];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 4];
+    
+    int counter = 2;
+    while (counter > 0) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+        counter = counter - 1;
+    }
+    
+    [self.recognizer close];
+    
+    XCTAssertTrue(YES, @"Normal return");
+    
 }
 
 - (void)testCloseWithoutRecognize {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
-    
-    CPqDASRSpeechRecognizer * recognizer = [builder build];
-    
-    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
-    
-    __weak SpeechRecognizerTests * weakSelf = self;
-    weakSelf.delegateFailBlock = ^(CPqDASRRecognitionError * recognitionError) {
-        XCTAssertEqual(recognitionError.code, CPqDASRRecognitionErrorCodeFailure, @"Connection closed by the server");
-        [testExpectation fulfill];
-    };
-    
     //Wait until the connection is open
     [NSThread sleepForTimeInterval:10.0f];
     
-    [recognizer close];
-    [self waitForExpectations:@[testExpectation] timeout: 10.0];
+    [self.recognizer close];
+    XCTAssertTrue(YES, @"Normal return");
     
 }
 
 - (void)testCancelWhileRecognizing {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    //Delay to deliver packets to recognizer, in seconds
+    NSInteger packetDelay = 0.3;
     
-    CPqDASRSpeechRecognizer * recognizer = [builder build];
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
+    
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
+    
+    [self.recognizer recognize:audioSource languageModel: list];
+    
+    [inputStream open];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 4];
+    
+    int counter = 2;
+    while (counter > 0) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+        counter = counter - 1;
+    }
     
     //Wait until the connection is open
     [NSThread sleepForTimeInterval:10.0f];
     
-    [recognizer cancelRecognition];
+    [self.recognizer cancelRecognition];
     
     XCTAssertTrue(YES, @"Normal return");
 }
 
 - (void)testCancelNoRecognize {
-    //TODO
+    
+    [self.recognizer cancelRecognition];
+    XCTAssertTrue(YES, @"Normal return");
+    
+}
+
+- (void)testWaitNoRecognize {
+    //waitRecognitionResult() not implemented
 }
 
 - (void)testDuplicateRecognize {
-    //TODO
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    //Delay to deliver packets to recognizer, in seconds
+    NSInteger packetDelay = 0.3;
+    
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+        XCTAssertTrue(recognitionResult.alternatives.count > 0, @"Number of alternatives is %lu", (unsigned long)recognitionResult.alternatives.count);
+        XCTAssertTrue([recognitionResult.alternatives.firstObject score] > 90, @"Score is higher than 90");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        XCTAssertNotNil([[recognitionResult.alternatives firstObject] interpretations], @"Contains interpretations");
+        [testExpectation fulfill];
+    };
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRBufferAudioSource * audioSource = [[CPqDASRBufferAudioSource alloc] init];
+    
+    NSInputStream * inputStream = [[NSInputStream alloc] initWithFileAtPath:audioPath];
+    
+    [self.recognizer recognize:audioSource languageModel: list];
+    
+    [inputStream open];
+    
+    //Wait for the server to start listening
+    [NSThread sleepForTimeInterval: 4];
+    
+    int counter = 10;
+    while (counter > 0) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+        counter = counter - 1;
+    }
+    
+    //Call recognize another time
+    XCTAssertThrows([self.recognizer recognize:audioSource languageModel: list]);
+    
+    //Continue sending audio
+    while (1) {
+        if ([inputStream hasBytesAvailable]) {
+            uint8_t buffer[1024];
+            NSInteger len = [inputStream read:buffer maxLength:1024];
+            if (len > 0) {
+                [audioSource write: [NSData dataWithBytes:buffer length:len]];
+                
+                [NSThread sleepForTimeInterval: packetDelay];
+                
+            } else {
+                [inputStream close];
+                [audioSource close];
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    
+    
+    [self waitForExpectations:@[testExpectation] timeout: 10.0];
+    
+}
+
+- (void)testMultipleRecognize {
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __block int numberOfRecognitionsPerformed = 0;
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+            XCTAssertTrue(recognitionResult.alternatives.count > 0, @"Number of alternatives is %lu", (unsigned long)recognitionResult.alternatives.count);
+            XCTAssertTrue([recognitionResult.alternatives.firstObject score] > 90, @"Score is higher than 90");
+            XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        
+        if (numberOfRecognitionsPerformed == 2){
+            [testExpectation fulfill];
+        }
+        numberOfRecognitionsPerformed = numberOfRecognitionsPerformed + 1;
+    };
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
+    
+    //First recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [NSThread sleepForTimeInterval:10.0];
+    
+    //Second recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [NSThread sleepForTimeInterval:10.0];
+    
+    //Third recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [self waitForExpectations:@[testExpectation] timeout:10.0];
+    
 }
 
 - (void)testMultiplesConnectOnRecognize {
-    //TODO
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: YES] maxSessionIdleSeconds: 2];
+    
+    self.recognizer = [builder build];
+    
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __block int numberOfRecognitionsPerformed = 0;
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+        XCTAssertTrue(recognitionResult.alternatives.count > 0, @"Number of alternatives is %lu", (unsigned long)recognitionResult.alternatives.count);
+        XCTAssertTrue([recognitionResult.alternatives.firstObject score] > 90, @"Score is higher than 90");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        
+        if (numberOfRecognitionsPerformed == 2){
+            [testExpectation fulfill];
+        }
+        numberOfRecognitionsPerformed = numberOfRecognitionsPerformed + 1;
+    };
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
+    
+    CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
+    
+    //First recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [NSThread sleepForTimeInterval:10.0];
+    
+    //Second recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [NSThread sleepForTimeInterval:15.0];
+    
+    //Third recognition
+    [self.recognizer recognize:audioSource languageModel:list];
+    
+    [self waitForExpectations:@[testExpectation] timeout:10.0];
+    
 }
 
 - (void)testMultiplesAutoClose {
@@ -283,29 +654,62 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testSessionTimeout {
-        
-}
-
-- (void)testRecognizeAfterSessionTimeout {
     
-    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 5];
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 10];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
     
-    [NSThread sleepForTimeInterval: 70];
-    
-    NSString * audioPath = [self.currentBundle pathForResource:@"cpf_8k" ofType:@"wav"];
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
-        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"CPF recognized");
-        XCTAssertNotNil([[recognitionResult.alternatives firstObject] interpretations], @"There are interpretations");
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        XCTAssertTrue(recognitionResult.alternatives.firstObject.score > 90, @"Score is higher than 90");
+        [recognizer close];
         [testExpectation fulfill];
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:grammar/cpf"];
+    [list addURI: grammarUri];
+    
+    CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
+    
+    [recognizer recognize:audioSource languageModel: list];
+    
+    [NSThread sleepForTimeInterval: 65];
+    
+    [self waitForExpectations:@[testExpectation] timeout: 10.0];
+    
+}
+
+- (void)testRecognizeAfterSessionTimeout {
+    
+    NSString * audioName = @"pizza-veg-8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:self.wsURL userAgent:nil credentials: @[self.username, self.password] delegate:self] autoClose: NO] connectOnRecognize: NO] maxSessionIdleSeconds: 10];
+    
+    CPqDASRSpeechRecognizer * recognizer = [builder build];
+    
+    [NSThread sleepForTimeInterval: 65];
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
+    XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
+    
+    __weak SpeechRecognizerTests * weakSelf = self;
+    weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult *recognitionResult) {
+        XCTAssertEqual(recognitionResult.status, CPqDASRRecognitionStatusRecognized, @"Result is recognized");
+        XCTAssertTrue(recognitionResult.alternatives.firstObject.score > 90, @"Score is higher than 90");
+        [recognizer close];
+        [testExpectation fulfill];
+    };
+    
+    CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
+    [list addURI: grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -316,7 +720,11 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
 }
 
 - (void)testContinuousMode {
-    NSString * audioPath = [self.currentBundle pathForResource:@"hetero_segments_8k" ofType:@"wav"];
+    
+    NSString * audioName = @"hetero_segments_8k";
+    NSString * grammarUri = @"builtin:slm/general";
+    
+    NSString * audioPath = [self.currentBundle pathForResource:audioName ofType:@"wav"];
     XCTestExpectation * testExpectation = [[XCTestExpectation alloc] init];
     
     __weak SpeechRecognizerTests * weakSelf = self;
@@ -327,7 +735,7 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
     };
     
     CPqDASRLanguageModelList * list = [[CPqDASRLanguageModelList alloc] init];
-    [list addURI:@"builtin:slm/general"];
+    [list addURI:grammarUri];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     

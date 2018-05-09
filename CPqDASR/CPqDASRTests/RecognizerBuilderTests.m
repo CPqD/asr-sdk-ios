@@ -120,7 +120,7 @@ static int pos2 = 1;
 
 - (void)testUrlInvalid {
     //NSURL does not throw exception for non-standard url strings as Java does.
-    //This test is probably to pass.
+    //This test is fail in assert of websocket. One possibility is to validate with Regexp.
     CPqDASRSpeechRecognizerBuilder * builder = [[CPqDASRSpeechRecognizerBuilder alloc] init];
     NSString * invalidURL = @"abcdasr:";
     
@@ -218,6 +218,7 @@ static int pos2 = 1;
     CPqDASRRecognitionConfig * recogConfig = [[CPqDASRRecognitionConfig alloc] init];
     recogConfig.maxSentences = [NSNumber numberWithInteger: maxSentences];
     
+    
     CPqDASRSpeechRecognizerBuilder * builder = [[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:wsURL userAgent:nil credentials:@[username, password] delegate:self] autoClose:NO] connectOnRecognize:YES];
     
     CPqDASRSpeechRecognizer * recognizer = [builder build];
@@ -226,7 +227,7 @@ static int pos2 = 1;
     
     __weak RecognizerBuilderTests * weakSelf = self;
     weakSelf.delegateResultBlock = ^(CPqDASRRecognitionResult * recognitionResult) {
-        XCTAssertEqual(recognitionResult.alternatives.count, maxSentences, @"Three alternatives returned");
+        XCTAssertEqual(recognitionResult.alternatives.count, maxSentences, @"%d alternatives returned", maxSentences);
         [testExpectation fulfill];
     };
     
@@ -235,7 +236,7 @@ static int pos2 = 1;
     
     NSBundle * bundle = [NSBundle bundleForClass: [self class]];
     
-    NSString * audioPath = [bundle pathForResource:@"cpf_8k" ofType:@"wav"];
+    NSString * audioPath = [bundle pathForResource:@"pizza-veg-8k" ofType:@"wav"];
     
     CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithFilePath:audioPath];
     
@@ -284,8 +285,14 @@ static int pos2 = 1;
     [recognizer recognize:audioSource languageModel: list];
     
     [self waitForExpectations:@[testExpectation] timeout:10.0];
-    
-    
+        
+}
+
+/**
+ @discussion Check occurance of timeout when maxWaitSeconds is defined
+ */
+- (void)testMaxWaitSeconds {
+    //TODO
 }
 
 #pragma mark -

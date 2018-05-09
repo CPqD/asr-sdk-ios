@@ -209,6 +209,11 @@
 
 - (void)recognize:(id<CPqDASRAudioSource>)audioSource languageModel:(CPqDASRLanguageModelList *)lm recogConfig:(CPqDASRRecognitionConfig *)recogConfig{
     
+    if ([self.asrClientEndpoint getStatus] != ASRSessionStatusIdle) {
+        [CPqDASRLog logMessage:@"Another recognition is running"];
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Another recognition is running" userInfo:nil];
+    }
+    
     self.audioSource = audioSource;    
     self.audioSource.delegate = self;
     
