@@ -104,7 +104,7 @@
         case NSStreamEventHasBytesAvailable:
         {
             [self.delegate audioSourceHasDataAvailable];
-            [NSThread sleepForTimeInterval:0.01];
+            [NSThread sleepForTimeInterval:0.005];
         }
             break;
         case NSStreamEventEndEncountered: {
