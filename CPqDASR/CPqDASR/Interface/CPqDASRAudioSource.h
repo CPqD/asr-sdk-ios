@@ -25,7 +25,7 @@
 @protocol CPqDASRAudioSourceDelegate <NSObject>
 
 /**
- *
+ * @brief Notify the recognizer that there are data to be recognized.
  */
 - (void)audioSourceHasDataAvailable;
 
@@ -60,6 +60,9 @@
 - (void)start;
 
 @required
+/**
+ @brief CPqDASRSpeechRecognizer will reference this property to get data
+ */
 @property (nonatomic, weak) id<CPqDASRAudioSourceDelegate> delegate;
 @end
 

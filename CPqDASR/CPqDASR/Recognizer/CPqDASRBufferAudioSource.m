@@ -106,6 +106,12 @@
     
     NSData * dt = [NSData dataWithBytes:buffer length: maxLength];
     
+    if (self.offset + maxLength < data.length) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), self.bufferQueue, ^{
+            [self.delegate audioSourceHasDataAvailable];
+        });
+    }
+    
     return dt;
 }
 
