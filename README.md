@@ -41,7 +41,7 @@ Por padrão, *recognitionDelegate* será invocado sempre na *Main Thread*. No en
 let recognizerDispatchQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive);
 builder = builder?.recognizerDelegateDispatchQueue(recognizerDelegateQueue);
 ```
-
+**Objective-C**:
 ```objc
 dispatch_queue_t recognizerDispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
 [builder recognizerDelegateDispatchQueue:recognizerDispatchQueue];
