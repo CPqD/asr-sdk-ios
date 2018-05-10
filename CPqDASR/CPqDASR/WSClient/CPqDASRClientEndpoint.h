@@ -110,6 +110,6 @@ typedef void (^SendMessageBlock)(ASRMessage * responseMessage);
  * @param sessionTimeout
  *            the sessionTimeoutTime to be set
  */
-- (void)setSessionTimeout:(NSTimeInterval)sessionTimeout;
+- (void)setSessionIdleTimeout:(NSTimeInterval)sessionTimeout;
 
 @end

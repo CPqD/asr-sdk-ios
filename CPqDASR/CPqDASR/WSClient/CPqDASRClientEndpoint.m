@@ -142,12 +142,7 @@
     return self.status;
 }
 
-- (void)dealloc {
-    [CPqDASRLog logMessage: [NSString stringWithFormat:@"%@ dealloc called", NSStringFromClass([self class])]];
-}
-
 /*!
- @brief teste
  @todo Not used
  */
 - (void)stopRecording {
@@ -209,6 +204,14 @@
         //Deal with NSData message
         [self.webSocket send:message];
     }
+}
+
+- (void)dealloc {
+    [CPqDASRLog logMessage: [NSString stringWithFormat:@"%@ dealloc called", NSStringFromClass([self class])]];
+}
+
+- (void)setSessionIdleTimeout:(NSTimeInterval)sessionTimeout {
+    self.sessionTimeout = sessionTimeout;
 }
 
 #pragma mark -

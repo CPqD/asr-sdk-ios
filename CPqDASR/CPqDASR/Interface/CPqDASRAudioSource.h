@@ -38,8 +38,9 @@
 
 /**
  * Reads data from the source.
+ * @param length of bytes to be read
  */
-- (NSData *)read;
+- (NSData *)readWithLength:(NSInteger)length;
 
 /**
  * Closes the source and releases any system resources associated.

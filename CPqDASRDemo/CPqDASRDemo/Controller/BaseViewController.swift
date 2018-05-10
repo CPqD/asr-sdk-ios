@@ -30,16 +30,18 @@ class BaseViewController: UIViewController {
     let endRecordingSoundId = 1116
     var audioSource : CPqDASRAudioSource?
     
+    let recognizerDelegateQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive);
+    
     @IBOutlet weak var recognizeButton: RecognizeButton!
     let config = CPqDASRRecognitionConfig();
     
-
+    
     @IBOutlet weak var resultTextView: UITextView!
     @IBOutlet weak var stateLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-            
+        
         languageModelList.addURI("builtin:slm/general")
         self.stateLabel.text = "Idle";
         config.continuousMode = NSNumber(value: false);
@@ -47,12 +49,13 @@ class BaseViewController: UIViewController {
         config.recognitionTimeoutSeconds = 10;
         config.recognitionTimeoutEnabled = true;
         
-        let builder = CPqDASRSpeechRecognizerBuilder()
+        var builder = CPqDASRSpeechRecognizerBuilder()
             .serverUrl(wsURL)
             .autoClose(true)
             .connect(onRecognize: true)
             .addRecognitionDelegate(self)
-            .userName(username, password: password)
+            .userName(username, password: password);
+        builder = builder?.recognizerDelegateDispatchQueue(recognizerDelegateQueue)
         recognizer = builder?.build()
     }
     
@@ -64,13 +67,15 @@ class BaseViewController: UIViewController {
     
     
     func showFinalResult(result: CPqDASRRecognitionResult) {
-        if result.alternatives.count > 0 {
-            let alternative = result.alternatives.first!
-            print("alternative text: \(alternative.text) score: \(alternative.score)");
-            self.resultTextView.text = alternative.text!
-            if alternative.words.count > 0 {
-                let word = alternative.words.first!
-                debugPrint("\n words: \(word.text)")
+        DispatchQueue.main.async {
+            if result.alternatives.count > 0 {
+                let alternative = result.alternatives.first!
+                print("alternative text: \(alternative.text) score: \(alternative.score)");
+                self.resultTextView.text = alternative.text!
+                if alternative.words.count > 0 {
+                    let word = alternative.words.first!
+                    debugPrint("\n words: \(word.text)")
+                }
             }
         }
     }
@@ -84,57 +89,67 @@ class BaseViewController: UIViewController {
 
 extension BaseViewController : CPqDASRRecognitionDelegate {
     func cpqdASRDidStartListening() {
-        self.stateLabel.text = "Listening"
-        
-        self.recognizeButton.recordingState = .Recording
+        DispatchQueue.main.async {
+            self.recognizeButton.recordingState = .Recording
+            self.stateLabel.text = "Listening"
+        }
     }
     
     func cpqdASRDidStartSpeech(_ time: TimeInterval) {
-        self.stateLabel.text = "Start of speech"
+        DispatchQueue.main.async {
+            self.stateLabel.text = "Start of speech"
+        }
     }
     
     func cpqdASRDidStopSpeech(_ time: TimeInterval) {
-        self.stateLabel.text = "Speech stopped"
-        
+        DispatchQueue.main.async {
+            self.stateLabel.text = "Speech stopped"
+        }
     }
     
     func cpqdASRDidReturnPartialResult(_ result: CPqDASRRecognitionResult!) {
         showFinalResult(result: result)
-        self.stateLabel.text = "Partial result"
+        DispatchQueue.main.async {
+            self.stateLabel.text = "Partial result"
+        }
     }
     
     func cpqdASRDidReturnFinalResult(_ result: CPqDASRRecognitionResult!) {
-        switch result.status {
-        case .recognized:
-            self.stateLabel.text = "Final result"
-            showFinalResult(result: result);
-        case .canceled:
-            self.stateLabel.text = "Recognition cancelled"
-        case .earlySpeech:
-            self.stateLabel.text = "Early speech"
-        case .failure:
-            self.stateLabel.text = "Failure"
-        case .maxSpeech:
-            self.stateLabel.text = "Max speech"
-        case .noInputTimeout:
-            self.stateLabel.text = "No input timeout"
-        case .noMatch:
-            self.stateLabel.text = "No match"
-        case .noSpeech:
-            self.stateLabel.text = "No speech"
-        case .processing:
-            self.stateLabel.text = "Processing"
-        case .recognitionTimeout:
-            self.stateLabel.text = "Recognition timeout"
+        DispatchQueue.main.async {
+            switch result.status {
+            case .recognized:
+                self.stateLabel.text = "Final result"
+                self.showFinalResult(result: result);
+            case .canceled:
+                self.stateLabel.text = "Recognition cancelled"
+            case .earlySpeech:
+                self.stateLabel.text = "Early speech"
+            case .failure:
+                self.stateLabel.text = "Failure"
+            case .maxSpeech:
+                self.stateLabel.text = "Max speech"
+            case .noInputTimeout:
+                self.stateLabel.text = "No input timeout"
+            case .noMatch:
+                self.stateLabel.text = "No match"
+            case .noSpeech:
+                self.stateLabel.text = "No speech"
+            case .processing:
+                self.stateLabel.text = "Processing"
+            case .recognitionTimeout:
+                self.stateLabel.text = "Recognition timeout"
+            }
+            
+            self.recognizeButton.recordingState = .Idle
         }
-        
-        self.recognizeButton.recordingState = .Idle
     }
     
     func cpqdASRDidFailWithError(_ error: CPqDASRRecognitionError!) {
         debugPrint("cpqdASRDidFailWithError fail with error \(error.message)")
-        self.stateLabel.text = "Closed"
-        self.recognizeButton.recordingState = .Idle
+        DispatchQueue.main.async {
+            self.stateLabel.text = "Closed"
+            self.recognizeButton.recordingState = .Idle
+        }
     }
 }
 

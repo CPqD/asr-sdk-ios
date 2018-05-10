@@ -41,6 +41,13 @@
 
 @property (nonatomic, assign) BOOL shouldStartRecognition;
 
+@property (nonatomic, assign) NSInteger bufferSize;
+
+/**
+ * If not set by the application, this will be dispatch_main_queue.
+ */
+@property (nonatomic) dispatch_queue_t recognizerDelegateDispatchQueue;
+
 @end
 
 @implementation CPqDASRSpeechRecognizer
@@ -62,13 +69,16 @@
         
         [self.asrClientEndpoint setWSDelegate:self];
         
-        [self.asrClientEndpoint setSessionTimeout:self.builder.maxSessionIdleSeconds];
+        [self.asrClientEndpoint setSessionIdleTimeout: self.builder.maxSessionIdleSeconds];
         
         [CPqDASRLog logMessage:@"CPqDASRClientEndpoint created"];
                         
         if (self.builder.recognitionDelegates == nil) {
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"recognitionDelegate can not be null" userInfo:nil];
         }
+        
+        self.recognizerDelegateDispatchQueue = self.builder.recognizerDelegateQueue;
+        
         self.shouldStartRecognition = YES;
         if (!self.builder.connectOnRecognize) {
             self.shouldStartRecognition = NO;
@@ -136,6 +146,9 @@
 }
 
 - (void)startRecording {
+    
+    self.bufferSize = [self calculateBufferSize:self.builder.chunkLength sampleRate:self.builder.audioSampleRate];
+    
     if ([self.audioSource respondsToSelector:@selector(start)]){
         [self.audioSource start];
     }    
@@ -185,7 +198,7 @@
     [self.asrClientEndpoint sendMessage:sendAudioRequest];;
     
     if (lastPacket) {
-        dispatch_async( dispatch_get_main_queue() , ^{
+        dispatch_async( self.recognizerDelegateDispatchQueue , ^{
             //TODO - call didStop here?
             //[self.builder.recognitionDelegate cpqdASRDidStopSpeech:0];
         });
@@ -199,6 +212,16 @@
     
     [self.asrClientEndpoint sendMessage:setParametersMessage];
 }
+
+- (NSInteger)calculateBufferSize:(NSInteger)chunkLength
+                      sampleRate:(CPqDASRSampleRate)audioSampleRate {
+    
+    NSInteger samples = (audioSampleRate == CPqDASRSampleRate16K) ? 16000 : 8000;
+    NSInteger result = (samples * 2) * (chunkLength) / 1000;
+    
+    return result;
+}
+
 
 #pragma -
 #pragma mark - CPqDASRSpeechRecognizerProtocol methods
@@ -263,7 +286,7 @@
     dispatch_async( self.recognizerQueue , ^{
         NSData * data;
         @synchronized (self) {
-             data = [self.audioSource read];
+             data = [self.audioSource readWithLength: self.bufferSize];
         }
         if(data.length > 0){
             [self sendAudio:data isLastPacket:NO];
@@ -277,7 +300,7 @@
 #pragma mark - CPqDASRRecognitionDelegate methods
 
 - (void)cpqdASRDidFailWithError:(CPqDASRRecognitionError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidFailWithError ---"];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidFailWithError:error];
@@ -292,7 +315,7 @@
 - (void)cpqdASRDidReturnFinalResult:(CPqDASRRecognitionResult *)result {
     //Stop recording
     [self.audioSource finish];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:[NSString stringWithFormat:@"\n\nCPqDASR - cpqdASRDidReturnFinalResult --- %ld", (long)result.status]];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidReturnFinalResult:result];
@@ -301,7 +324,7 @@
 }
 
 - (void)cpqdASRDidReturnPartialResult:(CPqDASRRecognitionResult *)result {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidReturnPartialResult ---"];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidReturnPartialResult:result];
@@ -311,7 +334,7 @@
 
 - (void)cpqdASRDidStartListening {
     [self startRecording];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStartListening ---"];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidStartListening];
@@ -320,7 +343,7 @@
 }
 
 - (void)cpqdASRDidStartSpeech:(NSTimeInterval)time {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStartSpeech ---"];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidStartSpeech:time];
@@ -332,7 +355,7 @@
     @synchronized (self) {
         [self.audioSource finish];
     };
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:@"\n\nCPqDASR - cpqdASRDidStopSpeech ---"];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {
             [delegate cpqdASRDidStopSpeech:time];
