@@ -42,7 +42,7 @@ class BaseViewController: UIViewController {
             
         languageModelList.addURI("builtin:slm/general")
         self.stateLabel.text = "Idle";
-        config.continuousMode = NSNumber(value: false);
+        config.continuousMode = NSNumber(value: true);
         config.maxSentences = NSNumber(value: 3);
         config.recognitionTimeoutSeconds = 10;
         config.recognitionTimeoutEnabled = true;

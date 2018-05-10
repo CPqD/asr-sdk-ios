@@ -83,7 +83,7 @@
     [self close];
 }
 
-- (NSData *)read {
+- (NSData *)readWithLength:(NSInteger)length {
     
     NSData * data = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
 
@@ -91,9 +91,9 @@
         return [NSData dataWithBytes:nil length:0];
     }
     
-    uint8_t buffer[1024];
+    uint8_t buffer[length];
     
-    NSInteger maxLength = (data.length - self.offset) > 1024 ? 1024 : data.length - self.offset;
+    NSInteger maxLength = (data.length - self.offset) > length ? length : data.length - self.offset;
     
     
     if (self.offset + maxLength > data.length) {

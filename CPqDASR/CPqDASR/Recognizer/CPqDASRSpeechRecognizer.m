@@ -41,6 +41,8 @@
 
 @property (nonatomic, assign) BOOL shouldStartRecognition;
 
+@property (nonatomic, assign) NSInteger bufferSize;
+
 @end
 
 @implementation CPqDASRSpeechRecognizer
@@ -62,7 +64,7 @@
         
         [self.asrClientEndpoint setWSDelegate:self];
         
-        [self.asrClientEndpoint setSessionTimeout:self.builder.maxSessionIdleSeconds];
+        [self.asrClientEndpoint setSessionIdleTimeout: self.builder.maxSessionIdleSeconds];
         
         [CPqDASRLog logMessage:@"CPqDASRClientEndpoint created"];
                         
@@ -136,6 +138,9 @@
 }
 
 - (void)startRecording {
+    
+    self.bufferSize = [self calculateBufferSize:self.builder.chunkLength sampleRate:self.builder.audioSampleRate];
+    
     if ([self.audioSource respondsToSelector:@selector(start)]){
         [self.audioSource start];
     }    
@@ -200,6 +205,16 @@
     [self.asrClientEndpoint sendMessage:setParametersMessage];
 }
 
+- (NSInteger)calculateBufferSize:(NSInteger)chunkLength
+                      sampleRate:(CPqDASRSampleRate)audioSampleRate {
+    
+    NSInteger samples = (audioSampleRate == CPqDASRSampleRate16K) ? 16000 : 8000;
+    NSInteger result = (samples * 2) * (chunkLength) / 1000;
+    
+    return result;
+}
+
+
 #pragma -
 #pragma mark - CPqDASRSpeechRecognizerProtocol methods
 
@@ -263,7 +278,7 @@
     dispatch_async( self.recognizerQueue , ^{
         NSData * data;
         @synchronized (self) {
-             data = [self.audioSource read];
+             data = [self.audioSource readWithLength: self.bufferSize];
         }
         if(data.length > 0){
             [self sendAudio:data isLastPacket:NO];

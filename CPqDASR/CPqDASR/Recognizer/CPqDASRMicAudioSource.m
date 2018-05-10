@@ -319,7 +319,7 @@ typedef NS_ENUM(NSInteger, CPqDASRAudioState)
     });
 }
 
-- (NSData *)read {
+- (NSData *)readWithLength:(NSInteger)length {
     [CPqDASRLog logMessage:@" --- read called --- "];
     
     if (self.audioState == CPqDASRAudioStateRecording){

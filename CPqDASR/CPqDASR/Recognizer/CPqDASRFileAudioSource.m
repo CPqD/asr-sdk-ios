@@ -64,15 +64,15 @@
     });
 }
 
-- (NSData *)read {
+- (NSData *)readWithLength:(NSInteger)length {
     
     if (self.inputStream == nil || self.finished) {
         return [NSData dataWithBytes:nil length:0];;
     }
 
-    uint8_t buff[1024];
+    uint8_t buff[length];
     NSInteger len = 0;
-    len = [self.inputStream read:buff maxLength:1024];
+    len = [self.inputStream read:buff maxLength:length];
     
     if(len > 0) {
         return [NSData dataWithBytes:buff length:len];
