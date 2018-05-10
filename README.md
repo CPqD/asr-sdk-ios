@@ -18,7 +18,7 @@ Crie uma instância de `CPqDASRSpeechRecognizerBuilder` passando os parâmetros 
 
 **Swift**:
 ```swift
-let builder = CPqDASRSpeechRecognizerBuilder()
+var builder = CPqDASRSpeechRecognizerBuilder()
             .serverUrl(wsURL)
             .addRecognitionDelegate(self)
             .userName(username, password: password)
@@ -33,6 +33,19 @@ CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder a
 
 ```
 É possível adicionar vários *delegates* de reconhecimento utilizando o método `addRecognitionDelegate` de `CPqDASRSpeechRecognizerBuilder`. Todas as instâncias devem implementar o protocolo [CPqDASRRecognitionDelegate](CPqDASR/CPqDASR/Interface/CPqDASRRecognitionDelegate.h). 
+
+Por padrão, *recognitionDelegate* será invocado sempre na *Main Thread*. No entanto, é possível configurar a fila de despacho deste delegate utilizando o método `recognizerDelegateDispatchQueue:` de `CPqDASRSpeechRecognizerBuilder`.
+
+**Swift**:
+```swift
+let recognizerDispatchQueue = DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive);
+builder = builder?.recognizerDelegateDispatchQueue(recognizerDelegateQueue);
+```
+
+```objc
+dispatch_queue_t recognizerDispatchQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+[builder recognizerDelegateDispatchQueue:recognizerDispatchQueue];
+```
 
 Após isso, basta criar uma instância de `CPqDASRSpeechRecognizer` utilizando o método `build` de `CPqDASRSpeechRecognizerBuilder`.
 
@@ -105,6 +118,7 @@ audioSource.write(data);
 
 ### Criar modelo de língua
 Para realizar um reconhecimento também é necessário fornecer um modelo de língua para o reconhecedor.
+
 **Swift**:
 ```swift
 let languageModelList = CPqDASRLanguageModelList();
@@ -118,7 +132,7 @@ CPqDASRLanguageModelList * languageModelList = [[CPqDASRLanguageModelList alloc]
 O exemplo acima define um modelo de fala livre interno.
 
 ### Realizar um reconhecimento
-Após criar um *builder*, uma fonte de áudio e definir o modelo de língua a ser utilizado, é possível iniciar uma sessão reconhecimento.
+Após criar um *recognizer*, uma fonte de áudio e definir o modelo de língua a ser utilizado, é possível iniciar uma sessão reconhecimento.
 
 **Swift**:
 ```swift

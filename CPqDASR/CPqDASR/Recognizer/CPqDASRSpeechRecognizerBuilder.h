@@ -76,9 +76,12 @@
 /** The maximum time the ASR session is kept open and idle. */
 @property (nonatomic, assign, readonly) NSInteger maxSessionIdleSeconds;
 
+
 /** The recognition configuration parameters. */
 @property (nonatomic, strong, readonly) CPqDASRRecognitionConfig * recogConfig;
 
+/** Dispatch Queue for recognizer delegate **/
+@property (nonatomic, readonly) dispatch_queue_t recognizerDelegateQueue;
 
 - (CPqDASRSpeechRecognizer *)build;
 
@@ -190,4 +193,16 @@
  * @todo for future use
  */
 - (CPqDASRSpeechRecognizerBuilder *)language:(CPqDASRLanguageCode *)language;
+
+/**
+ *
+ * Sets Recognizer delegate Queue. By default, this will be dispatch_main_queue.
+ *
+ *
+ * @param delegateQueue
+ *            queue to dispatch recognition related events.
+ * @return the Builder object.
+ */
+- (CPqDASRSpeechRecognizerBuilder *)recognizerDelegateDispatchQueue:(dispatch_queue_t)delegateQueue;
+
 @end

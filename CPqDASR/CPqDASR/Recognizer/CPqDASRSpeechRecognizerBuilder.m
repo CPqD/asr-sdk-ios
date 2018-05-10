@@ -39,6 +39,7 @@
         _connectOnRecognize = false;
         _autoClose = false;
         _recognitionDelegates = [[NSArray alloc] init];
+        _recognizerDelegateQueue = dispatch_get_main_queue();
     }
     return self;
 }
@@ -121,6 +122,11 @@
 
 - (CPqDASRSpeechRecognizerBuilder *)language:(CPqDASRLanguageCode *)language {
     _language = language;
+    return self;
+}
+
+- (CPqDASRSpeechRecognizerBuilder *)recognizerDelegateDispatchQueue:(dispatch_queue_t)delegateQueue {
+    _recognizerDelegateQueue = delegateQueue;
     return self;
 }
 

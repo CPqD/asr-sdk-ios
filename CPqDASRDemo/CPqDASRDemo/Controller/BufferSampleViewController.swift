@@ -18,8 +18,7 @@ import UIKit
 import CPqDASR
 
 class BufferSampleViewController: BaseViewController {
-
-
+        
     let audioName = "pizza-veg-8k";
     
     var audioPath : String?    
@@ -28,12 +27,12 @@ class BufferSampleViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-         self.title = "Buffer Audio Source"
+        self.title = "Buffer Audio Source"
         
         self.audioPath = Bundle.main.path(forResource: audioName, ofType: "wav");
         audioSource = CPqDASRBufferAudioSource();
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -84,8 +83,9 @@ class BufferSampleViewController: BaseViewController {
             self.close()
         }
         
-        self.resultTextView.text = ""
-        
+        DispatchQueue.main.async {
+            self.resultTextView.text = ""
+        }
     }
     func close() {
         DispatchQueue.global().async {
