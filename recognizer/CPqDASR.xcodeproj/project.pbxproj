@@ -36,8 +36,6 @@
 		22C73839207517FF00762D6E /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C73838207517FF00762D6E /* AudioToolbox.framework */; };
 		22C7383D20752F5200762D6E /* CPqDASRClientEndpoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7383B20752F5200762D6E /* CPqDASRClientEndpoint.h */; };
 		22C7383E20752F5200762D6E /* CPqDASRClientEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C7383C20752F5200762D6E /* CPqDASRClientEndpoint.m */; };
-		22C7384120752F9B00762D6E /* CPqDASRProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7383F20752F9B00762D6E /* CPqDASRProtocol.h */; };
-		22C7384220752F9B00762D6E /* CPqDASRProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C7384020752F9B00762D6E /* CPqDASRProtocol.m */; };
 		22C7385F207536DA00762D6E /* CPqDASRRecognitionResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7385D207536D900762D6E /* CPqDASRRecognitionResult.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		22C73860207536DA00762D6E /* CPqDASRRecognitionResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C7385E207536DA00762D6E /* CPqDASRRecognitionResult.m */; };
 		22C738682075372400762D6E /* CPqDASRLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C738612075372300762D6E /* CPqDASRLog.h */; };
@@ -56,6 +54,8 @@
 		22C7387E2075442000762D6E /* CPqDASRSpeechRecognizerBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C7387C2075442000762D6E /* CPqDASRSpeechRecognizerBuilder.m */; };
 		22C738812075497600762D6E /* CPqDASRLanguageCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 22C7387F2075497600762D6E /* CPqDASRLanguageCode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		22C738822075497600762D6E /* CPqDASRLanguageCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C738802075497600762D6E /* CPqDASRLanguageCode.m */; };
+		22FF969F20BDB67F006EF802 /* CPqDASRProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 22FF969D20BDB67F006EF802 /* CPqDASRProtocol.m */; };
+		22FF96A020BDB67F006EF802 /* CPqDASRProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 22FF969E20BDB67F006EF802 /* CPqDASRProtocol.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,8 +98,6 @@
 		22C73838207517FF00762D6E /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		22C7383B20752F5200762D6E /* CPqDASRClientEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPqDASRClientEndpoint.h; sourceTree = "<group>"; };
 		22C7383C20752F5200762D6E /* CPqDASRClientEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPqDASRClientEndpoint.m; sourceTree = "<group>"; };
-		22C7383F20752F9B00762D6E /* CPqDASRProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPqDASRProtocol.h; sourceTree = "<group>"; };
-		22C7384020752F9B00762D6E /* CPqDASRProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPqDASRProtocol.m; sourceTree = "<group>"; };
 		22C7385D207536D900762D6E /* CPqDASRRecognitionResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPqDASRRecognitionResult.h; sourceTree = "<group>"; };
 		22C7385E207536DA00762D6E /* CPqDASRRecognitionResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPqDASRRecognitionResult.m; sourceTree = "<group>"; };
 		22C738612075372300762D6E /* CPqDASRLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPqDASRLog.h; sourceTree = "<group>"; };
@@ -120,6 +118,8 @@
 		22C7387C2075442000762D6E /* CPqDASRSpeechRecognizerBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPqDASRSpeechRecognizerBuilder.m; sourceTree = "<group>"; };
 		22C7387F2075497600762D6E /* CPqDASRLanguageCode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPqDASRLanguageCode.h; sourceTree = "<group>"; };
 		22C738802075497600762D6E /* CPqDASRLanguageCode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CPqDASRLanguageCode.m; sourceTree = "<group>"; };
+		22FF969D20BDB67F006EF802 /* CPqDASRProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPqDASRProtocol.m; sourceTree = "<group>"; };
+		22FF969E20BDB67F006EF802 /* CPqDASRProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPqDASRProtocol.h; sourceTree = "<group>"; };
 		4C6DA826F0EA0BF52D8CE0BA /* Pods-CPqDASR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPqDASR.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CPqDASR/Pods-CPqDASR.debug.xcconfig"; sourceTree = "<group>"; };
 		7314CE436E72FC10A9E0D474 /* Pods-CPqDASR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CPqDASR.release.xcconfig"; path = "Pods/Target Support Files/Pods-CPqDASR/Pods-CPqDASR.release.xcconfig"; sourceTree = "<group>"; };
 		EF7FED21DBDF4B619877F5FC /* libPods-CPqDASR.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CPqDASR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -180,10 +180,10 @@
 		22C7380E2075111600762D6E /* CPqDASR */ = {
 			isa = PBXGroup;
 			children = (
+				22FF969C20BDB67F006EF802 /* Protocol */,
 				22C7383A20752F3600762D6E /* WSClient */,
 				22C73832207517EE00762D6E /* Utils */,
 				22C7380F2075111600762D6E /* CPqDASR.h */,
-				22C73830207516F500762D6E /* ASRProtocol */,
 				22C738292075134800762D6E /* Interface */,
 				22C738272075134800762D6E /* Model */,
 				22C738262075134800762D6E /* Recognizer */,
@@ -250,15 +250,6 @@
 			path = Interface;
 			sourceTree = "<group>";
 		};
-		22C73830207516F500762D6E /* ASRProtocol */ = {
-			isa = PBXGroup;
-			children = (
-				22C7383F20752F9B00762D6E /* CPqDASRProtocol.h */,
-				22C7384020752F9B00762D6E /* CPqDASRProtocol.m */,
-			);
-			path = ASRProtocol;
-			sourceTree = "<group>";
-		};
 		22C738312075171600762D6E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -301,6 +292,15 @@
 			path = WSClient;
 			sourceTree = "<group>";
 		};
+		22FF969C20BDB67F006EF802 /* Protocol */ = {
+			isa = PBXGroup;
+			children = (
+				22FF969D20BDB67F006EF802 /* CPqDASRProtocol.m */,
+				22FF969E20BDB67F006EF802 /* CPqDASRProtocol.h */,
+			);
+			path = Protocol;
+			sourceTree = "<group>";
+		};
 		7712B739E3D44C090FE752CA /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,10 +337,10 @@
 				2270F179208664860048498B /* CPqDASRFileAudioSource.h in Headers */,
 				22A8C411207B88CF00368870 /* CPqDASRRecognitionConfig.h in Headers */,
 				2255BAFE207D513100029A27 /* CPqDASRLanguageModelList.h in Headers */,
-				22C7384120752F9B00762D6E /* CPqDASRProtocol.h in Headers */,
 				22C7386B2075372400762D6E /* CPqDASRVersionManager.h in Headers */,
 				22C73835207517EE00762D6E /* zc-e.h in Headers */,
 				22C7386A2075372400762D6E /* CPqDASRDeviceManager.h in Headers */,
+				22FF96A020BDB67F006EF802 /* CPqDASRProtocol.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,7 +456,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport FRAMEWORK_LOCN=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\n\ncp -r ${FRAMEWORK_LOCN} \"${PWD}/../CPqDASRDemo/CPqDASRDemo/\"\n\n";
+			shellScript = "set -e\n\nexport FRAMEWORK_LOCN=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\n\ncp -r ${FRAMEWORK_LOCN} \"${PWD}/../sample-app/CPqDASRDemo/\"\n\n";
 		};
 		E5E8FC62A1C1CF9748F69C14 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -503,7 +503,6 @@
 				22C73836207517EE00762D6E /* zc-e.c in Sources */,
 				22A8C412207B88CF00368870 /* CPqDASRRecognitionConfig.m in Sources */,
 				22C73860207536DA00762D6E /* CPqDASRRecognitionResult.m in Sources */,
-				22C7384220752F9B00762D6E /* CPqDASRProtocol.m in Sources */,
 				22C7386E2075372400762D6E /* CPqDASRLog.m in Sources */,
 				22C7386C2075372400762D6E /* CPqDASRVersionManager.m in Sources */,
 				22C738822075497600762D6E /* CPqDASRLanguageCode.m in Sources */,
@@ -511,6 +510,7 @@
 				2255BAFF207D513100029A27 /* CPqDASRLanguageModelList.m in Sources */,
 				224F173420763E35008B1F61 /* CPqDASRMicAudioSource.m in Sources */,
 				22C738792075419E00762D6E /* CPqDASRRecognitionError.m in Sources */,
+				22FF969F20BDB67F006EF802 /* CPqDASRProtocol.m in Sources */,
 				22C7387520753E4200762D6E /* CPqDASRSpeechRecognizer.m in Sources */,
 				22C7386D2075372400762D6E /* CPqDASRDeviceManager.m in Sources */,
 				2270F17A208664860048498B /* CPqDASRFileAudioSource.m in Sources */,

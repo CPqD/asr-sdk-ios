@@ -113,14 +113,20 @@ static int pos2 = 1;
     
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder throws an exception when ASR server URL is null.
+ */
 - (void)testUrlNull {
     CPqDASRSpeechRecognizerBuilder * builder = [[CPqDASRSpeechRecognizerBuilder alloc] init];
     XCTAssertThrows([builder build], @"Invalid URL");
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder throws an exception when ASR server URL is not valid.
+ */
 - (void)testUrlInvalid {
     //NSURL does not throw exception for non-standard url strings as Java does.
-    //This test is fail in assert of websocket. One possibility is to validate with Regexp.
+    //This test will fail in assert of websocket. One possibility is to validate with Regexp.
     CPqDASRSpeechRecognizerBuilder * builder = [[CPqDASRSpeechRecognizerBuilder alloc] init];
     NSString * invalidURL = @"abcdasr:";
     
@@ -128,9 +134,12 @@ static int pos2 = 1;
     XCTAssertThrows([builder build]);
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder accepts a valid access credential.
+ */
 - (void)testCredentialValid {
     
-    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k";
     NSString * username = @"estevan";
     NSString * password = @"Thect195";
     
@@ -155,6 +164,9 @@ static int pos2 = 1;
     
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder fails when access credential is not valid.
+ */
 - (void)testCredentialNotValid {
     NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
     NSString * username = @"invalidUsername";
@@ -180,6 +192,9 @@ static int pos2 = 1;
     [self waitForExpectations:@[testExpectation] timeout:10.0];
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder fails when access credential is null.
+ */
 - (void)testCredentialNull {
 
     NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
@@ -206,9 +221,12 @@ static int pos2 = 1;
     
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder is created with the given configuration object.
+ */
 - (void)testCreateRecogConfig {
  
-    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k";
     NSString * username = @"estevan";
     NSString * password = @"Thect195";
     
@@ -217,7 +235,6 @@ static int pos2 = 1;
 
     CPqDASRRecognitionConfig * recogConfig = [[CPqDASRRecognitionConfig alloc] init];
     recogConfig.maxSentences = [NSNumber numberWithInteger: maxSentences];
-    
     
     CPqDASRSpeechRecognizerBuilder * builder = [[[[CPqDASRSpeechRecognizerBuilder alloc] initWithURL:wsURL userAgent:nil credentials:@[username, password] delegate:self] autoClose:NO] connectOnRecognize:YES];
     
@@ -246,6 +263,9 @@ static int pos2 = 1;
     
 }
 
+/**
+ * Tests if CPqDASRSpeechRecognizerBuilder is passing events to all listeners
+ */
 - (void)testMultipleListeners {
     
     //First listener is the default, self (RecognizerBuilderTests).
@@ -289,10 +309,10 @@ static int pos2 = 1;
 }
 
 /**
- @discussion Check occurance of timeout when maxWaitSeconds is defined
+ * Tests if CPqDASRSpeechRecognizerBuilder meets the timeout defined for recognition result
  */
 - (void)testMaxWaitSeconds {
-    //TODO
+    //TODO - waitRecognitionResult is not implemented
 }
 
 #pragma mark -
