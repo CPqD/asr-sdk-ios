@@ -22,7 +22,7 @@ import AVFoundation
 class BaseViewController: UIViewController {
     
     var recognizer : CPqDASRSpeechRecognizer?
-    let wsURL = "wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k"    
+    let wsURL = "wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k"    
     let username = "estevan";
     let password = "Thect195";
     let languageModelList = CPqDASRLanguageModelList();
@@ -52,7 +52,6 @@ class BaseViewController: UIViewController {
         var builder = CPqDASRSpeechRecognizerBuilder()
             .serverUrl(wsURL)
             .autoClose(true)
-            .connect(onRecognize: true)
             .addRecognitionDelegate(self)
             .userName(username, password: password);
         builder = builder?.recognizerDelegateDispatchQueue(recognizerDelegateQueue)
@@ -61,7 +60,7 @@ class BaseViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated);
-        recognizer?.cancelRecognition();
+        recognizer?.close();
         self.recognizeButton.recordingState = .Idle;
     }
     
