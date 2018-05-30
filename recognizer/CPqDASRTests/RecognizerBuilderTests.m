@@ -139,7 +139,7 @@ static int pos2 = 1;
  */
 - (void)testCredentialValid {
     
-    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k";
     NSString * username = @"estevan";
     NSString * password = @"Thect195";
     
@@ -226,7 +226,7 @@ static int pos2 = 1;
  */
 - (void)testCreateRecogConfig {
  
-    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k";
+    NSString * wsURL = @"wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k";
     NSString * username = @"estevan";
     NSString * password = @"Thect195";
     

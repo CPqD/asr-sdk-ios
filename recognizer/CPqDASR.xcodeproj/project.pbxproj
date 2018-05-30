@@ -456,7 +456,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport FRAMEWORK_LOCN=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\n\ncp -r ${FRAMEWORK_LOCN} \"${PWD}/../CPqDASRDemo/CPqDASRDemo/\"\n\n";
+			shellScript = "set -e\n\nexport FRAMEWORK_LOCN=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework\"\n\ncp -r ${FRAMEWORK_LOCN} \"${PWD}/../sample-app/CPqDASRDemo/\"\n\n";
 		};
 		E5E8FC62A1C1CF9748F69C14 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

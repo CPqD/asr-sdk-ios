@@ -22,7 +22,7 @@ import AVFoundation
 class BaseViewController: UIViewController {
     
     var recognizer : CPqDASRSpeechRecognizer?
-    let wsURL = "wss://speech.cpqd.com.br/asr/ws/estevan/recognize/8k"    
+    let wsURL = "wss://speech.cpqd.com.br/asr/ws/v2/recognize/8k"    
     let username = "estevan";
     let password = "Thect195";
     let languageModelList = CPqDASRLanguageModelList();
