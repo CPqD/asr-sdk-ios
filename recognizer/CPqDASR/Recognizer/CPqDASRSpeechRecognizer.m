@@ -275,6 +275,10 @@
         ASRCancelRecognition * cancelRecognition = [[ASRCancelRecognition alloc] init];
         cancelRecognition.handle = self.handle;
         [self.asrClientEndpoint sendMessage:cancelRecognition];
+        
+        if( self.builder.autoClose) {
+            [self close];
+        }
     }
 }
 
@@ -321,6 +325,10 @@
             [delegate cpqdASRDidReturnFinalResult:result];
         }
     });
+    if( self.builder.autoClose && result.lastSpeechSegment ) {
+        [self close];
+    }
+    
 }
 
 - (void)cpqdASRDidReturnPartialResult:(CPqDASRRecognitionResult *)result {
