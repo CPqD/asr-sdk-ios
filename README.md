@@ -6,7 +6,7 @@ Para maiores informações, consulte [a documentação do projeto](https://speec
 
 ## Aplicação de exemplo
 
-A aplicação de demonstração está no diretório [CPqDASRDemo](CPqDASRDemo/).
+A aplicação de demonstração está no diretório [sample-app](sample-app/).
 
 ## Uso
 
