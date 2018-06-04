@@ -19,7 +19,7 @@
 #import "CPqDASRClientEndpoint.h"
 #import "CPqDASRLog.h"
 #import "CPqDASRMicAudioSource.h"
-#import "CPqDASRProtocol.h"
+#import "ASRProtocol.h"
 #import <CPqDASR/CPqDASRSpeechRecognizerBuilder.h>
 
 

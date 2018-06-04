@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 
-#import "CPqDASRProtocol.h"
+#import "ASRProtocol.h"
 #import "CPqDASRVersionManager.h"
 #import "CPqDASRLog.h"
 #import "CPqDASRDeviceManager.h"

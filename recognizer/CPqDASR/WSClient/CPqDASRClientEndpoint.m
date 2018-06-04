@@ -16,7 +16,7 @@
 
 #import "CPqDASRClientEndpoint.h"
 #import <SocketRocket.h>
-#import "CPqDASRProtocol.h"
+#import "ASRProtocol.h"
 #import "CPqDASRLog.h"
 #import "CPqDASRReturnCode.h"
 #import <CPqDASR/CPqDASRRecognitionError.h>

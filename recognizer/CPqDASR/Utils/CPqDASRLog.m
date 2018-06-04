@@ -20,7 +20,7 @@
 
 + (void)logMessage:(NSString *)log
 {
-    NSLog(@"%@",log);
+    NSLog(@"%@",log);    
 }
 
 @end
