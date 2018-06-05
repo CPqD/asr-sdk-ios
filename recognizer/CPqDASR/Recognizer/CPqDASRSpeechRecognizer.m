@@ -292,10 +292,11 @@
         @synchronized (self) {
              data = [self.audioSource readWithLength: self.bufferSize];
         }
-        if(data.length > 0){
-            [self sendAudio:data isLastPacket:NO];
-        } else {
+        if (data == nil) {
             [self sendAudio:data isLastPacket:YES];
+        }
+        else if(data.length > 0){
+            [self sendAudio:data isLastPacket:NO];
         }
     });
 }
@@ -311,6 +312,8 @@
         }
     });
     
+    [self.audioSource finish];
+    
     if(self.builder.autoClose){
         [self close];
     }
@@ -318,7 +321,6 @@
 
 - (void)cpqdASRDidReturnFinalResult:(CPqDASRRecognitionResult *)result {
     //Stop recording
-    [self.audioSource finish];
     dispatch_async(self.recognizerDelegateDispatchQueue, ^{
         [CPqDASRLog logMessage:[NSString stringWithFormat:@"\n\nCPqDASR - cpqdASRDidReturnFinalResult --- %ld", (long)result.status]];
         for (id<CPqDASRRecognitionDelegate> delegate in self.builder.recognitionDelegates) {

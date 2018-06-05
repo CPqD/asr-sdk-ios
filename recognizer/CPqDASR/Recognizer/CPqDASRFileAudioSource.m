@@ -57,7 +57,6 @@
         NSRunLoop * runLoop = [NSRunLoop currentRunLoop];
         
         [self.inputStream scheduleInRunLoop:runLoop forMode:NSDefaultRunLoopMode];
-        
         [self.inputStream open];
         
         [runLoop run];
@@ -67,18 +66,18 @@
 - (NSData *)readWithLength:(NSInteger)length {
     
     if (self.inputStream == nil || self.finished) {
-        return [NSData dataWithBytes:nil length:0];;
+        return nil;
     }
 
     uint8_t buff[length];
     NSInteger len = 0;
     len = [self.inputStream read:buff maxLength:length];
     
-    if(len > 0) {
-        return [NSData dataWithBytes:buff length:len];
+    if(len < 0) {
+        return nil;
     }
     
-    return [NSData dataWithBytes:nil length:0];
+    return [NSData dataWithBytes:buff length:len];
 }
 
 - (void)close {
@@ -104,7 +103,7 @@
         case NSStreamEventHasBytesAvailable:
         {
             [self.delegate audioSourceHasDataAvailable];
-            [NSThread sleepForTimeInterval:0.005];
+            [NSThread sleepForTimeInterval:0.250];
         }
             break;
         case NSStreamEventEndEncountered: {

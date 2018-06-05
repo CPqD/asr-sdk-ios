@@ -19,7 +19,7 @@ import CPqDASR
 
 class BufferSampleViewController: BaseViewController {
         
-    let audioName = "pizza-veg-8k";
+    let audioName = "hetero_segments_8k";
     
     var audioPath : String?    
     var inputStream : InputStream?
@@ -63,35 +63,34 @@ class BufferSampleViewController: BaseViewController {
             self.inputStream?.open()
             
             while (true) {
+                if (self.inputStream == nil) {
+                    continue;
+                }
                 if (self.inputStream!.hasBytesAvailable) {
-                    let length = 1024
+                    let length = 1600 //100 ms (tx 8kHz)
                     let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: length);
                     let bufferSizeRead = self.inputStream?.read(buffer, maxLength: length)
                     if (bufferSizeRead != nil && bufferSizeRead! < 0) {
                         break;
                     } else {
                         let dt = Data(bytes: buffer, count: bufferSizeRead!)
-                        bufferAudioSource.write(dt);
+                        if (!bufferAudioSource.write(dt)) {
+                            break;
+                        }
                         //delay sending the next segment to simulate real-time audio capture
-                        Thread.sleep(forTimeInterval: 0.123)
+                        Thread.sleep(forTimeInterval: 0.10)
                     }
                     buffer.deallocate()
                 } else {
                     break;
                 }
             }
-            self.close()
+            self.inputStream?.close();
+            self.inputStream = nil;
         }
         
         DispatchQueue.main.async {
             self.resultTextView.text = ""
-        }
-    }
-    func close() {
-        DispatchQueue.global().async {
-            self.inputStream?.close();
-            self.inputStream = nil;
-            self.audioSource?.close()
         }
     }
 }

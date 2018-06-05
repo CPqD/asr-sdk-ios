@@ -290,7 +290,6 @@ typedef void (^DelegateFinalResultBlock)(CPqDASRRecognitionResult * recognitionR
                 
             } else {
                 [inputStream close];
-                [audioSource close];
                 break;
             }
         } else {
