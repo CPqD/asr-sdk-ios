@@ -17,12 +17,17 @@
 #import "CPqDASRBufferAudioSource.h"
 #import "CPqDASRLog.h"
 
+NSString *const outputFileName = @"/buffer.dat";
+
 @interface CPqDASRBufferAudioSource ()
 
 @property (nonatomic) dispatch_queue_t bufferQueue;
 @property (nonatomic, assign) BOOL finished;
 @property (nonatomic) NSOutputStream * outputStream;
+@property (nonatomic) NSInputStream * inputStream;
 @property (nonatomic, assign) NSInteger offset;
+@property (nonatomic, strong) NSString * file;
+@property (nonatomic, assign) BOOL initiated;
 @end
 
 @implementation CPqDASRBufferAudioSource
@@ -33,9 +38,17 @@
         self.bufferQueue = dispatch_queue_create("com.cpqd.bufferqueue", DISPATCH_QUEUE_SERIAL);
         self.finished = NO;
         self.offset = 0;
+        
+        NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        self.file = [[paths objectAtIndex:0] stringByAppendingString: outputFileName];
     }
     return self;
     
+}
+
+- (BOOL)removeAudioFile {
+    //Remove file, is exists
+    return [[NSFileManager defaultManager] removeItemAtPath:self.file error:nil];
 }
 
 #pragma mark -
@@ -45,10 +58,15 @@
     @synchronized (self) {
         self.offset = 0;
         self.finished = NO;
-        self.outputStream = [[NSOutputStream alloc] initToMemory];
+        self.initiated = NO;
+        [self removeAudioFile];
+        self.outputStream = [[NSOutputStream alloc] initToFileAtPath:self.file append: YES];
         [self.outputStream open];
+        
+        self.inputStream = [[NSInputStream alloc] initWithFileAtPath:self.file];
+        [self.inputStream open];
+    
     }
-
 }
 
 - (BOOL)write:(NSData *)data {
@@ -56,9 +74,9 @@
     if (self.finished) {
         return false;
     }
+    
     if ([self.outputStream hasSpaceAvailable]) {
         NSInteger bytesWritten = 0;
-        
         @synchronized (self){
             bytesWritten = [self.outputStream write:[data bytes] maxLength: [data length]];
         };
@@ -67,7 +85,10 @@
             return false;
         }
         
-        [self.delegate audioSourceHasDataAvailable];
+        if (!self.initiated) {
+            [self.delegate audioSourceHasDataAvailable];
+            self.initiated = YES;
+        }
         
     } else {
         return false;
@@ -85,40 +106,35 @@
 
 - (NSData *)readWithLength:(NSInteger)length {
     
-    NSData * data = [self.outputStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
-
-    if ( !data || data.length <= 0 ) {
-        return [NSData dataWithBytes:nil length:0];
-    }
-    
+    NSData * dt = nil;
     uint8_t buffer[length];
+    NSInteger bytesRead = 0;
     
-    NSInteger maxLength = (data.length - self.offset) > length ? length : data.length - self.offset;
-    
-    
-    if (self.offset + maxLength > data.length) {
-        maxLength = data.length - self.offset;
+    @synchronized (self) {
+        bytesRead = [self.inputStream read:buffer maxLength: length];
     }
     
-    [data getBytes:buffer range:NSMakeRange(self.offset, maxLength)];
+    if (bytesRead < 0 ) {
+        return nil;
+    }
     
-    self.offset += maxLength;
-    
-    NSData * dt = [NSData dataWithBytes:buffer length: maxLength];
-    
-    if (self.offset + maxLength < data.length) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), self.bufferQueue, ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 300 * NSEC_PER_MSEC), self.bufferQueue, ^{        
+        if ([self.inputStream hasBytesAvailable]) {
             [self.delegate audioSourceHasDataAvailable];
-        });
-    }
+        } else {
+            [self close];
+        }
+    });
     
+    dt = [NSData dataWithBytes:buffer length: bytesRead];
     return dt;
 }
 
 - (void)close {
-    self.finished = YES;
-    @synchronized (self){
-        [self.outputStream close];        
+    @synchronized (self) {
+        self.finished = YES;
+        [self.outputStream close];
+        [self.inputStream close];
     };
 }
 
