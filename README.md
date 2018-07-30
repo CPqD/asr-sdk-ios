@@ -32,7 +32,7 @@ CPqDASRSpeechRecognizerBuilder * builder = [[[[[CPqDASRSpeechRecognizerBuilder a
                                                 userName: username password: password];
 
 ```
-É possível adicionar vários *delegates* de reconhecimento utilizando o método `addRecognitionDelegate` de `CPqDASRSpeechRecognizerBuilder`. Todas as instâncias devem implementar o protocolo [CPqDASRRecognitionDelegate](CPqDASR/CPqDASR/Interface/CPqDASRRecognitionDelegate.h). 
+É possível adicionar vários *delegates* de reconhecimento utilizando o método `addRecognitionDelegate` de `CPqDASRSpeechRecognizerBuilder`. Todas as instâncias devem implementar o protocolo [CPqDASRRecognitionDelegate](recognizer/CPqDASR/Interface/CPqDASRRecognitionDelegate.h). 
 
 Por padrão, *recognitionDelegate* será invocado sempre na *Main Thread*. No entanto, é possível configurar a fila de despacho deste delegate utilizando o método `recognizerDelegateDispatchQueue:` de `CPqDASRSpeechRecognizerBuilder`.
 
@@ -59,7 +59,7 @@ CPqDASRSpeechRecognizer * recognizer = [builder build];
 ```
 
 ### Criar uma fonte de áudio para o reconhecimento
-Para que o ASR possa realizar um reconhecimento de fala é preciso fornecer uma fonte de áudio para a instância de `CPqDASRSpeechRecognizer`. Uma fonte de áudio pode ser qualquer classe que implemente o protocolo [CPqDASRAudioSource](CPqDASR/CPqDASR/Interface/CPqDASRAudioSource.h).
+Para que o ASR possa realizar um reconhecimento de fala é preciso fornecer uma fonte de áudio para a instância de `CPqDASRSpeechRecognizer`. Uma fonte de áudio pode ser qualquer classe que implemente o protocolo [CPqDASRAudioSource](recognizer/CPqDASR/Interface/CPqDASRAudioSource.h).
 
 O framework CPqDASR já fornece três fontes de áudio que podem ser utilizadas pela aplicação para realizar um reconhecimento.
 
@@ -75,7 +75,7 @@ let audioSource = CPqDASRMicAudioSource(delegate: self, andSampleRate: captureSa
 ```objc
 [[CPqDASRMicAudioSource alloc] initWithDelegate:self andSampleRate: captureSampleRate]; 
 ```
-Deve ser fornecido um *delegate* responsável por implementar o protocol [CPqDASRMicAudioSourceDelegate](CPqDASR/CPqDASR/Recognizer/CPqDASRMicAudioSource.h).
+Deve ser fornecido um *delegate* responsável por implementar o protocol [CPqDASRMicAudioSourceDelegate](recognizer/CPqDASR/Recognizer/CPqDASRMicAudioSource.h).
 
 Também deve ser fornecido a taxa de amostragem para captura de áudio, podendo ser 8 ou 16 KHz.
 
@@ -94,7 +94,7 @@ CPqDASRFileAudioSource * audioSource = [[CPqDASRFileAudioSource alloc] initWithF
 `audioPath` é o caminho para o arquivo de áudio a ser reconhecido.
 
 #### CPqDASRBufferAudioSource
-Fonte de áudio que utiliza amostras fornecidas pela aplicação para realizar o reconhecimento.
+Fonte de áudio que utiliza amostras de áudio fornecidas pela aplicação para realizar o reconhecimento.
 Crie uma instância de `CPqDASRBufferAudioSource` conforme exemplo:
 
 **Swift**:
@@ -132,7 +132,7 @@ CPqDASRLanguageModelList * languageModelList = [[CPqDASRLanguageModelList alloc]
 O exemplo acima define um modelo de fala livre interno.
 
 ### Realizar um reconhecimento
-Após criar um *recognizer*, uma fonte de áudio e definir o modelo de língua a ser utilizado, é possível iniciar uma sessão reconhecimento.
+Após criar um *recognizer*, uma fonte de áudio e definir o modelo de língua a ser utilizado, é possível iniciar uma sessão de reconhecimento.
 
 **Swift**:
 ```swift
@@ -142,7 +142,7 @@ recognizer.recognize(audioSource, languageModel: languageModelList)
 ```objc
 [recognizer recognize:audioSource languageModel: languageModelList];
 ```
-Opcionalmente, para cada novo reconhecimento pode ser fornecido um objeto com parâmetros a serem utilizados somente para aquele reconhecimento. O objeto a ser utilizado é uma instância de [CPqDASRRecognitionConfig](CPqDASR/CPqDASR/Model/CPqDASRRecognitionConfig.h).
+Opcionalmente, para cada novo reconhecimento pode ser fornecido um objeto com parâmetros a serem utilizados somente para aquele reconhecimento. O objeto a ser utilizado é uma instância de [CPqDASRRecognitionConfig](recognizer/CPqDASR/Model/CPqDASRRecognitionConfig.h).
 
 **Swift**:
 ```swift
